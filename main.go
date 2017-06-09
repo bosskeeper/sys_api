@@ -15,12 +15,14 @@ func main(){
 	r.GET("/users",ctrl.UserGetAll)
 	r.POST("/user",ctrl.UserSave)
 	r.PUT("/user",ctrl.UserUpdate)
+	r.PUT("/user/disable",ctrl.UserDisable)
 
 	r.GET("/app",ctrl.AppGetById)
 	r.GET("/apps/search",ctrl.AppGetByKeyword)
 	r.GET("/apps",ctrl.AppGetAll)
 	r.POST("/app",ctrl.AppSave)
 	r.PUT("/app",ctrl.AppUpdate)
+	r.PUT("/app/disable",ctrl.AppDisable)
 
 
 

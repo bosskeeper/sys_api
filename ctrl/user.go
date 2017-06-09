@@ -25,11 +25,7 @@ func init(){
 //=======================================================API User========================================================
 func UserGetById(c *gin.Context){
 	log.Println("call GET UserGetByCode()")
-	c.Header("Server", "Sys_API")
-	c.Header("Host", "nopadol.net:9000")
-	c.Header("Access-Control-Allow-Origin", "*")
-	c.Header("Access-Control-Allow-Methods","GET, POST, PATCH, PUT, DELETE, OPTIONS")
-	c.Header("Access-Control-Allow-Headers","Origin, Content-Type, X-Auth-Token")
+	c.Keys = headerKeys
 
 	access_token := c.Request.URL.Query().Get("access_token")
 	user_id := c.Request.URL.Query().Get("user_id")
@@ -57,11 +53,7 @@ func UserGetById(c *gin.Context){
 
 func UserGetByKeyword(c *gin.Context){
 	log.Println("call GET UserGetByKeyword()")
-	c.Header("Server", "Sys_API")
-	c.Header("Host", "nopadol.net:9000")
-	c.Header("Access-Control-Allow-Origin", "*")
-	c.Header("Access-Control-Allow-Methods","GET, POST, PATCH, PUT, DELETE, OPTIONS")
-	c.Header("Access-Control-Allow-Headers","Origin, Content-Type, X-Auth-Token")
+	c.Keys = headerKeys
 
 	//keyword := c.Param("keyword")
 	keyword := c.Request.URL.Query().Get("keyword")
@@ -78,11 +70,7 @@ func UserGetByKeyword(c *gin.Context){
 
 func UserGetAll(c *gin.Context){
 	log.Println("call GET UserGetAll()")
-	c.Header("Server", "Sys_API")
-	c.Header("Host", "nopadol.net:9000")
-	c.Header("Access-Control-Allow-Origin", "*")
-	c.Header("Access-Control-Allow-Methods","GET, POST, PATCH, PUT, DELETE, OPTIONS")
-	c.Header("Access-Control-Allow-Headers","Origin, Content-Type, X-Auth-Token")
+	c.Keys = headerKeys
 
 	access_token := c.Request.URL.Query().Get("access_token")
 	u := new(model.User)
@@ -95,11 +83,7 @@ func UserGetAll(c *gin.Context){
 
 func UserSave(c *gin.Context){
 	log.Println("call POST UserSave()")
-	c.Header("Server", "Sys_API")
-	c.Header("Host", "nopadol.net:9000")
-	c.Header("Access-Control-Allow-Origin", "*")
-	c.Header("Access-Control-Allow-Methods","GET, POST, PATCH, PUT, DELETE, OPTIONS")
-	c.Header("Access-Control-Allow-Headers","Origin, Content-Type, X-Auth-Token")
+	c.Keys = headerKeys
 
 
 	newUser := &model.User{}
@@ -126,11 +110,7 @@ func UserSave(c *gin.Context){
 
 func UserUpdate(c *gin.Context){
 	log.Println("call PUT UserUpdate()")
-	c.Header("Server", "Sys_API")
-	c.Header("Host", "nopadol.net:9000")
-	c.Header("Access-Control-Allow-Origin", "*")
-	c.Header("Access-Control-Allow-Methods","GET, POST, PATCH, PUT, DELETE, OPTIONS")
-	c.Header("Access-Control-Allow-Headers","Origin, Content-Type, X-Auth-Token")
+	c.Keys = headerKeys
 
 	user := &model.User{}
 	err := c.BindJSON(user)
@@ -138,6 +118,7 @@ func UserUpdate(c *gin.Context){
 		fmt.Println(err)
 	}
 	u, _ := user.UserUpdate(dbc)
+
 	rs := api.Response{}
 	if err != nil {
 		rs.Status = "error"
@@ -150,3 +131,29 @@ func UserUpdate(c *gin.Context){
 	}
 
 }
+
+
+func UserDisable(c *gin.Context){
+	log.Println("call PUT UserUpdate()")
+	c.Keys = headerKeys
+
+	user := &model.User{}
+	err := c.BindJSON(user)
+	if err != nil {
+		fmt.Println(err)
+	}
+	u, _ := user.UserDisable(dbc)
+
+	rs := api.Response{}
+	if err != nil {
+		rs.Status = "error"
+		rs.Message = "No Content: " + err.Error()
+		c.JSON(http.StatusOK, rs)
+	}else{
+		rs.Status = "success"
+		rs.Data = u
+		c.JSON(http.StatusOK, rs)
+	}
+
+}
+

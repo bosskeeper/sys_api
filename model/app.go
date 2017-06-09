@@ -91,6 +91,28 @@ func (a *App)AppUpdate(db *sqlx.DB)(app_code string, err error){
 }
 
 
+func (a *App)AppDisable(db *sqlx.DB)(app_code string, err error){
+	a.EditDateTime = time.Now().String()
+	sql := `update App set ActiveStatus=?,EditorId=?,EditDateTime=? where Id=? `
+	res, err := db.Exec(sql,a.ActiveStatus,a.EditorId,a.EditDateTime,a.Id)
+	if err != nil {
+		fmt.Println(err)
+		return "", err
+	}
+
+	update, err := res.RowsAffected()
+	if err != nil {
+		fmt.Println(err)
+		return "", err
+	}
+	fmt.Println("Edit Last Id = ",update)
+
+	app_code = a.AppCode
+
+	return app_code, nil
+}
+
+
 
 
 

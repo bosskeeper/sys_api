@@ -25,7 +25,7 @@ type User struct {
 
 
 func (u *User)UserGetById(db *sqlx.DB, access_token string, user_id int64) error{
-	sql := `select Id,UserCode,UserName,Password,Telephone,ProfitId,DepartmentId,ExpertId from User where id =? limit 1`
+	sql := `select Id,UserCode,UserName,Password,Telephone,ProfitId,DepartmentId,ExpertId,ActiveStatus from User where id =? limit 1`
 	u.Id = user_id
 	err := db.Get(u,sql,u.Id)
 	if err != nil {
@@ -37,7 +37,7 @@ func (u *User)UserGetById(db *sqlx.DB, access_token string, user_id int64) error
 }
 
 func (u *User)UserGetByKeyword(db *sqlx.DB,access_token string, keyword string) (users []*User,err error){
-	sql := `select Id,UserCode,UserName,Password,Telephone,ProfitId,DepartmentId,ExpertId from User where UserCode like CONCAT("%",?,"%") or UserName like CONCAT("%",?,"%") order by Id`
+	sql := `select Id,UserCode,UserName,Password,Telephone,ProfitId,DepartmentId,ExpertId,ActiveStatus from User where UserCode like CONCAT("%",?,"%") or UserName like CONCAT("%",?,"%") order by Id`
 	err = db.Select(&users,sql,keyword,keyword)
 	if err != nil {
 		fmt.Println(err.Error())
@@ -49,7 +49,7 @@ func (u *User)UserGetByKeyword(db *sqlx.DB,access_token string, keyword string) 
 
 
 func (u *User)UserGetAll(db *sqlx.DB, access_token string) (users []*User,err error){
-	sql := `select Id,UserCode,UserName,Password,Telephone,ProfitId,DepartmentId,ExpertId from User order by usercode`
+	sql := `select Id,UserCode,UserName,Password,Telephone,ProfitId,DepartmentId,ExpertId,ActiveStatus from User order by usercode`
 	err = db.Select(&users,sql)
 	if err != nil {
 		fmt.Println(err.Error())
@@ -130,6 +130,33 @@ func (u *User)UserUpdate(db *sqlx.DB)(user_code string, err error){
 }
 
 
+func (u *User)UserDisable(db *sqlx.DB)(user_code string, err error){
+	fmt.Println("UserCode = ",u.Id)
+	err = u.GetUserNotExist(db)
+	fmt.Println("check nil =",err)
+	if err != nil {
+		fmt.Println(err)
+		return "", err
+	}
+
+	u.EditDateTime = time.Now().String()
+	sql := `update User set ActiveStatus=?,EditorId=?,EditDateTime=? where id = ?`
+	res, err := db.Exec(sql,u.ActiveStatus,u.EditorId,u.EditDateTime,u.Id)
+	if err != nil {
+		fmt.Println(err)
+		return "", err
+	}
+
+	update, err :=res.RowsAffected()
+	if err != nil {
+		fmt.Println(err)
+		return "", err
+	}
+	fmt.Println("",update)
+
+	return u.UserCode, nil
+}
+
 func (u *User) GetUserNotExist(db *sqlx.DB) error {
 	sql := `select Id from User where Id = ?`
 	err := db.Get(u, sql, u.Id)
@@ -141,3 +168,4 @@ func (u *User) GetUserNotExist(db *sqlx.DB) error {
 
 	return nil
 }
+

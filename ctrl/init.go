@@ -14,3 +14,16 @@ func ConnectDB(dbName string)(db *sqlx.DB,err error){
 	return db, err
 }
 
+var headerKeys = make(map[string]interface{})
+
+func setHeader(){
+
+	headerKeys = map[string]interface{}{
+		"Server":"Sys_API",
+		"Host":"nopadol.net:9000",
+		"Content_Type":"application/json",
+		"Access-Control-Allow-Origin":"*",
+		"Access-Control-Allow-Methods":"GET, POST, PUT, DELETE",
+		"Access-Control-Allow-Headers":"Origin, Content-Type, X-Auth-Token",
+	}
+}

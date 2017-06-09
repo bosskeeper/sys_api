@@ -14,30 +14,18 @@ import (
 //=======================================================API App========================================================
 
 
-var defaultContext *gin.Context
-
-var headerKeys = make(map[string]interface{})
-
 func init(){
 	db, err := ConnectDB("sys")
 	if err != nil {
 		fmt.Println(err.Error())
 	}
 	dbc = db
-
-
-	headerKeys = map[string]interface{}{
-		"Server":"Sys_API",
-		"Host":"nopadol.net:9000",
-		"Content_Type":"application/json",
-		"Access-Control-Allow-Origin":"*",
-	}
 }
-
 
 func AppGetAll(c *gin.Context){
 	log.Println("call GET AppGetAll()")
 	c.Keys = headerKeys
+
 	newApp := &model.App{}
 	apps, err := newApp.AppGetAll(dbc)
 	if err != nil {
@@ -58,7 +46,7 @@ func AppGetAll(c *gin.Context){
 
 func AppGetById(c *gin.Context){
 	log.Println("call GET AppGetById()")
-	//c = defaultContext
+	c.Keys = headerKeys
 
 	access_token := c.Request.URL.Query().Get("access_token")
 	app_id := c.Request.URL.Query().Get("app_id")
@@ -85,7 +73,7 @@ func AppGetById(c *gin.Context){
 
 func AppGetByKeyword(c *gin.Context){
 	log.Println("call GET AppGetByKeyword()")
-	//c = defaultContext
+	c.Keys = headerKeys
 
 	access_token := c.Request.URL.Query().Get("access_token")
 	keyword := c.Request.URL.Query().Get("keyword")
@@ -110,7 +98,7 @@ func AppGetByKeyword(c *gin.Context){
 
 func AppSave(c *gin.Context){
 	log.Println("call POST AppSave()")
-	//c = defaultContext
+	c.Keys = headerKeys
 
 	newApp := &model.App{}
 	err := c.BindJSON(newApp)
@@ -140,5 +128,45 @@ func AppUpdate(c *gin.Context){
 		fmt.Println(err)
 	}
 
-	//res, err := newApp.AppUpdate()
+	a, err := newApp.AppUpdate(dbc)
+	if err != nil {
+		fmt.Println(err)
+	}
+	rs := api.Response{}
+	if err != nil {
+		rs.Status="error"
+		rs.Message="No Content "+ err.Error()
+		c.JSON(http.StatusNotFound,rs)
+	}else {
+		rs.Status="success"
+		rs.Data =a
+		c.JSON(http.StatusNotFound,rs)
+	}
+
+}
+
+func AppDisable(c *gin.Context){
+	log.Println("call PUT AppUpdate()")
+
+	newApp := &model.App{}
+	err := c.BindJSON(newApp)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	a, err := newApp.AppDisable(dbc)
+	if err != nil {
+		fmt.Println(err)
+	}
+	rs := api.Response{}
+	if err != nil {
+		rs.Status="error"
+		rs.Message="No Content "+ err.Error()
+		c.JSON(http.StatusNotFound,rs)
+	}else {
+		rs.Status="success"
+		rs.Data =a
+		c.JSON(http.StatusNotFound,rs)
+	}
+
 }
