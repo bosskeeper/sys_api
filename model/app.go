@@ -75,7 +75,6 @@ func (a *App)AppUpdate(db *sqlx.DB)(app_code string, err error){
 	res, err := db.Exec(sql,a.AppCode,a.AppName,a.Description,a.ActiveStatus,a.EditorId,a.EditDateTime,a.Id)
 
 	fmt.Println("sql = ", sql)
-	fmt.
 	if err != nil {
 		fmt.Println(err)
 		return "", err
