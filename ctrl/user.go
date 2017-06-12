@@ -123,7 +123,7 @@ func UserUpdate(c *gin.Context){
 	if err != nil {
 		rs.Status = "error"
 		rs.Message = "No Content: " + err.Error()
-		c.JSON(http.StatusOK, rs)
+		c.JSON(http.StatusNotFound, rs)
 	}else{
 		rs.Status = "success"
 		rs.Data = u
@@ -148,7 +148,7 @@ func UserDisable(c *gin.Context){
 	if err != nil {
 		rs.Status = "error"
 		rs.Message = "No Content: " + err.Error()
-		c.JSON(http.StatusOK, rs)
+		c.JSON(http.StatusNotFound, rs)
 	}else{
 		rs.Status = "success"
 		rs.Data = u

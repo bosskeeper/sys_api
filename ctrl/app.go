@@ -140,7 +140,7 @@ func AppUpdate(c *gin.Context){
 	}else {
 		rs.Status="success"
 		rs.Data =a
-		c.JSON(http.StatusNotFound,rs)
+		c.JSON(http.StatusOK,rs)
 	}
 
 }
@@ -166,7 +166,7 @@ func AppDisable(c *gin.Context){
 	}else {
 		rs.Status="success"
 		rs.Data =a
-		c.JSON(http.StatusNotFound,rs)
+		c.JSON(http.StatusOK,rs)
 	}
 
 }
