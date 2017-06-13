@@ -24,7 +24,19 @@ func main(){
 	r.PUT("/app",ctrl.AppUpdate)
 	r.PUT("/app/disable",ctrl.AppDisable)
 
+	r.GET("/menu",ctrl.MenuGetById)
+	r.GET("/menus/search",ctrl.MenuGetByKeyword)
+	r.GET("/menus",ctrl.MenuGetAll)
+	r.POST("/menu",ctrl.MenuSave)
+	r.PUT("/menu",ctrl.MenuUpdate)
+	r.PUT("/menu/disable",ctrl.MenuDisable)
 
+	//r.GET("/role",ctrl.RoleGetById)
+	//r.GET("/roles/search",ctrl.RoleGetByKeyword)
+	//r.GET("/roles",ctrl.RoleGetAll)
+	//r.POST("/role",ctrl.RoleSave)
+	//r.PUT("/role",ctrl.RoleUpdate)
+	//r.PUT("/role/disable",ctrl.RoleDisable)
 
 	r.Run(":9000")
 
