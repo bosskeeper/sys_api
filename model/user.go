@@ -36,6 +36,19 @@ func (u *User)UserGetById(db *sqlx.DB, access_token string, user_id int64) error
 	return nil
 }
 
+func (u *User)UserGetByUserCode(db *sqlx.DB, access_token string, user_code string) error{
+	sql := `select Id,UserCode,UserName,Password,Telephone,ProfitId,DepartmentId,ExpertId,ActiveStatus from User where UserCode =? limit 1`
+	fmt.Println(sql)
+	u.UserCode = user_code
+	err := db.Get(u,sql,u.UserCode)
+	if err != nil {
+		fmt.Println(err.Error())
+		return err
+	}
+
+	return nil
+}
+
 func (u *User)UserGetByKeyword(db *sqlx.DB,access_token string, keyword string) (users []*User,err error){
 	sql := `select Id,UserCode,UserName,Password,Telephone,ProfitId,DepartmentId,ExpertId,ActiveStatus from User where UserCode like CONCAT("%",?,"%") or UserName like CONCAT("%",?,"%") order by Id`
 	err = db.Select(&users,sql,keyword,keyword)

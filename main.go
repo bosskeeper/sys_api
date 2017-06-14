@@ -10,7 +10,8 @@ func main(){
 	r := gin.New()
 
 	r.Use(cors.Default())
-	r.GET("/user",ctrl.UserGetById)
+	//r.GET("/user",ctrl.UserGetById)
+	r.GET("/user",ctrl.UserGetByUserCode)
 	r.GET("/users/search",ctrl.UserGetByKeyword)
 	r.GET("/users",ctrl.UserGetAll)
 	r.POST("/user",ctrl.UserSave)

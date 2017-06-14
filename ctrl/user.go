@@ -51,6 +51,34 @@ func UserGetById(c *gin.Context){
 
 }
 
+func UserGetByUserCode(c *gin.Context){
+	log.Println("call GET UserGetByUserCode()")
+	c.Keys = headerKeys
+
+	access_token := c.Request.URL.Query().Get("access_token")
+	user_code := c.Request.URL.Query().Get("user_code")
+
+	u := new(model.User)
+	u.UserCode = user_code
+	err := u.UserGetByUserCode(dbc,access_token,u.UserCode)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println("UserCode = ",user_code,u.UserCode,u.UserName)
+
+	rs := api.Response{}
+	if err != nil {
+		rs.Status = "error"
+		rs.Message = "No Content: " + err.Error()
+		c.JSON(http.StatusNotFound, rs)
+	} else {
+		rs.Status = "success"
+		rs.Data = u
+		c.JSON(http.StatusOK, rs)
+	}
+
+}
+
 func UserGetByKeyword(c *gin.Context){
 	log.Println("call GET UserGetByKeyword()")
 	c.Keys = headerKeys
