@@ -27,7 +27,6 @@ func (a *App) AppGetAll(db *sqlx.DB) (apps []*App, err error) {
 		return nil, err
 	}
 	return apps, nil
-
 }
 
 func (a *App) AppGetByKeyword(db *sqlx.DB, access_token string, keyword string)(apps []*App, err error){
@@ -51,6 +50,18 @@ func (a *App) AppGetById(db *sqlx.DB, access_token string, app_id int64) error{
 	return nil
 }
 
+func (a *App) AppGetByAppCode(db *sqlx.DB, access_token string, app_code string) error{
+	sql := `select Id,AppCode,AppName,ifnull(Description,'') as Description,ActiveStatus from App where AppCode = ? order by Id limit 1`
+	a.AppCode = app_code
+	err := db.Get(a,sql,a.AppCode)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	fmt.Println("AppCode = ",a.AppCode)
+	return nil
+}
+
 func (a *App) AppSave(db *sqlx.DB) (app_code string, err error){
 	a.CreateDateTime = time.Now().String()
 	a.ActiveStatus = 1
@@ -60,7 +71,6 @@ func (a *App) AppSave(db *sqlx.DB) (app_code string, err error){
 		fmt.Println(err)
 		return "",err
 	}
-
 	app_code = a.AppCode
 	id, _ := res.LastInsertId()
 	fmt.Println("Last Insert Id = ",id)
@@ -78,19 +88,15 @@ func (a *App)AppUpdate(db *sqlx.DB)(app_code string, err error){
 		fmt.Println(err)
 		return "", err
 	}
-
 	update, err := res.RowsAffected()
 	if err != nil {
 		fmt.Println(err)
 		return "", err
 	}
 	fmt.Println("Edit Last Id = ",update)
-
 	app_code = a.AppCode
-
 	return app_code, nil
 }
-
 
 func (a *App)AppDisable(db *sqlx.DB)(app_code string, err error){
 	a.EditDateTime = time.Now().String()
@@ -100,16 +106,13 @@ func (a *App)AppDisable(db *sqlx.DB)(app_code string, err error){
 		fmt.Println(err)
 		return "", err
 	}
-
 	update, err := res.RowsAffected()
 	if err != nil {
 		fmt.Println(err)
 		return "", err
 	}
 	fmt.Println("Edit Last Id = ",update)
-
 	app_code = a.AppCode
-
 	return app_code, nil
 }
 

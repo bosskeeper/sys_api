@@ -57,7 +57,6 @@ func AppGetById(c *gin.Context){
 	if err != nil {
 		fmt.Println(err)
 	}
-
 	rs := api.Response{}
 	if err != nil {
 		rs.Status = "error"
@@ -68,7 +67,31 @@ func AppGetById(c *gin.Context){
 		rs.Data = a
 		c.JSON(http.StatusOK,rs)
 	}
+}
 
+func AppGetByAppCode(c *gin.Context){
+	log.Println("call GET AppGetByAppCode()")
+	c.Keys = headerKeys
+
+	access_token := c.Request.URL.Query().Get("access_token")
+	app_code := c.Request.URL.Query().Get("app_code")
+
+	a := new(model.App)
+	a.AppCode = app_code
+	err := a.AppGetByAppCode(dbc, access_token, a.AppCode)
+	if err != nil {
+		fmt.Println(err)
+	}
+	rs := api.Response{}
+	if err != nil {
+		rs.Status = "error"
+		rs.Message = "No Content: " + err.Error()
+		c.JSON(http.StatusNotFound,rs)
+	}else{
+		rs.Status = "success"
+		rs.Data = a
+		c.JSON(http.StatusOK,rs)
+	}
 }
 
 func AppGetByKeyword(c *gin.Context){

@@ -18,7 +18,8 @@ func main(){
 	r.PUT("/user",ctrl.UserUpdate)
 	r.PUT("/user/disable",ctrl.UserDisable)
 
-	r.GET("/app",ctrl.AppGetById)
+	//r.GET("/app",ctrl.AppGetById)
+	r.GET("/app",ctrl.AppGetByAppCode)
 	r.GET("/apps/search",ctrl.AppGetByKeyword)
 	r.GET("/apps",ctrl.AppGetAll)
 	r.POST("/app",ctrl.AppSave)
