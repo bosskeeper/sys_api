@@ -49,7 +49,6 @@ func (a *App) AppGetById(db *sqlx.DB, access_token string, app_id int64) error{
 	}
 	fmt.Println("AppCode = ",a.AppCode)
 	return nil
-
 }
 
 func (a *App) AppSave(db *sqlx.DB) (app_code string, err error){

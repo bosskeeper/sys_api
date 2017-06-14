@@ -92,7 +92,6 @@ func (r *Role)RoleUpdate(db *sqlx.DB)(role_code string, err error){
 	return role_code, nil
 }
 
-
 func (r *Role)RoleDisable(db *sqlx.DB)(role_code string, err error){
 	r.EditDateTime = time.Now().String()
 	sql := `update Role set ActiveStatus=?,EditorId=?,EditDateTime=? where Id=? `
@@ -101,15 +100,12 @@ func (r *Role)RoleDisable(db *sqlx.DB)(role_code string, err error){
 		fmt.Println(err)
 		return "", err
 	}
-
 	update, err := res.RowsAffected()
 	if err != nil {
 		fmt.Println(err)
 		return "", err
 	}
 	fmt.Println("Edit Last Id = ",update)
-
 	role_code = r.RoleCode
-
 	return role_code, nil
 }
