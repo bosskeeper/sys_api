@@ -28,6 +28,7 @@ func main(){
 
 	r.GET("/menu",ctrl.MenuGetById)
 	r.GET("/menus/search",ctrl.MenuGetByKeyword)
+	r.GET("/menu/app_id",ctrl.MenuGetByAppId)
 	r.GET("/menus",ctrl.MenuGetAll)
 	r.POST("/menu",ctrl.MenuSave)
 	r.PUT("/menu",ctrl.MenuUpdate)

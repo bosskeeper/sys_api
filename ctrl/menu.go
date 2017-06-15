@@ -68,7 +68,31 @@ func MenuGetById(c *gin.Context){
 		rs.Data = m
 		c.JSON(http.StatusOK,rs)
 	}
+}
 
+func MenuGetByAppId(c *gin.Context){
+	log.Println("call GET MenuGetByAppId()")
+	c.Keys = headerKeys
+
+	access_token := c.Request.URL.Query().Get("access_token")
+	app_id := c.Request.URL.Query().Get("app_id")
+
+	m := new(model.Menu)
+	m.AppId,_ = strconv.ParseInt(app_id,10,64)
+	err := m.MenuGetByAppId(dbc, access_token, m.AppId)
+	if err != nil {
+		fmt.Println(err)
+	}
+	rs := api.Response{}
+	if err != nil {
+		rs.Status = "error"
+		rs.Message = "No Content: " + err.Error()
+		c.JSON(http.StatusNotFound,rs)
+	}else{
+		rs.Status = "success"
+		rs.Data = m
+		c.JSON(http.StatusOK,rs)
+	}
 }
 
 func MenuGetByKeyword(c *gin.Context){

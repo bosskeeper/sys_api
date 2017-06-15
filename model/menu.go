@@ -10,7 +10,7 @@ type Menu struct {
 	Id int64 `json:"id" db:"Id"`
 	MenuCode string `json:"menu_code" db:"MenuCode"`
 	MenuName string `json:"menu_name" db:"MenuName"`
-	AppId int `json:"app_id" db:"AppId"`
+	AppId int64 `json:"app_id" db:"AppId"`
 	Description string `json:"description" db:"Description"`
 	ActiveStatus int `json:"active_status" db:"ActiveStatus"`
 	CreatorId int `json:"creator_id" db:"CreatorId"`
@@ -50,6 +50,18 @@ func (m *Menu) MenuGetById(db *sqlx.DB, access_token string, menu_id int64) erro
 	fmt.Println("MenuCode = ",m.MenuCode)
 	return nil
 
+}
+
+func (m *Menu) MenuGetByAppId(db *sqlx.DB, access_token string, app_id int64) error{
+	sql := `select Id,MenuCode,MenuName,AppId,ifnull(Description,'') as Description,ActiveStatus from Menu where AppId = ? order by AppId limit 1`
+	m.AppId = app_id
+	err := db.Get(m,sql,m.AppId)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	fmt.Println("AppId = ",m.AppId)
+	return nil
 }
 
 func (m *Menu) MenuSave(db *sqlx.DB) (menu_code string, err error){
