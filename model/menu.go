@@ -52,17 +52,28 @@ func (m *Menu) MenuGetById(db *sqlx.DB, access_token string, menu_id int64) erro
 
 }
 
-func (m *Menu) MenuGetByAppId(db *sqlx.DB, access_token string, app_id int64) error{
-	sql := `select Id,MenuCode,MenuName,AppId,ifnull(Description,'') as Description,ActiveStatus from Menu where AppId = ? order by AppId`
+func (m *Menu) MenuGetByAppId(db *sqlx.DB, access_token string, app_id int64) (menus []*Menu, err error){
+	sql := `select Id,MenuCode,MenuName,AppId,ifnull(Description,'') as Description,ActiveStatus from Menu where AppId = ? order by Id`
 	m.AppId = app_id
-	err := db.Get(m,sql,m.AppId)
+	err = db.Select(&menus,sql,m.AppId)
 	if err != nil {
 		fmt.Println(err)
-		return err
+		return nil, err
 	}
 	fmt.Println("AppId = ",m.AppId)
-	return nil
+	return menus, nil
+
 }
+
+//func (m *Menu) MenuGetByAppId(db *sqlx.DB, access_token string, app_id int64) (menus []*Menu, err error){
+//	sql := `select Id,MenuCode,MenuName,AppId,ifnull(Description,'') as Description,ActiveStatus from Menu where AppId = ? order by AppId`
+//	fmt.Println(sql)
+//	err = db.Select(&menus,sql,app_id,app_id)
+//	if err != nil {
+//		return nil, err
+//	}
+//	return menus, nil
+//}
 
 func (m *Menu) MenuSave(db *sqlx.DB) (menu_code string, err error){
 	m.CreateDateTime = time.Now().String()
