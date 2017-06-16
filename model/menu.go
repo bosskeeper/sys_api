@@ -53,7 +53,7 @@ func (m *Menu) MenuGetById(db *sqlx.DB, access_token string, menu_id int64) erro
 }
 
 func (m *Menu) MenuGetByAppId(db *sqlx.DB, access_token string, app_id int64) error{
-	sql := `select Id,MenuCode,MenuName,AppId,ifnull(Description,'') as Description,ActiveStatus from Menu where AppId = ? order by AppId limit 1`
+	sql := `select Id,MenuCode,MenuName,AppId,ifnull(Description,'') as Description,ActiveStatus from Menu where AppId = ? order by AppId`
 	m.AppId = app_id
 	err := db.Get(m,sql,m.AppId)
 	if err != nil {
