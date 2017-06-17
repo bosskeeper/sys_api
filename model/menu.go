@@ -49,7 +49,6 @@ func (m *Menu) MenuGetById(db *sqlx.DB, access_token string, menu_id int64) erro
 	}
 	fmt.Println("MenuCode = ",m.MenuCode)
 	return nil
-
 }
 
 func (m *Menu) MenuGetByAppId(db *sqlx.DB, access_token string, app_id int64) (menus []*Menu, err error){

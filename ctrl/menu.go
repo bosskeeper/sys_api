@@ -144,7 +144,7 @@ func MenuSave(c *gin.Context){
 }
 
 func MenuUpdate(c *gin.Context){
-	log.Println("call PUT AppUpdate()")
+	log.Println("call PUT Menu Update")
 
 	newMenu := &model.Menu{}
 	err := c.BindJSON(newMenu)
@@ -170,15 +170,15 @@ func MenuUpdate(c *gin.Context){
 }
 
 func MenuDisable(c *gin.Context){
-	log.Println("call PUT AppUpdate()")
+	log.Println("call PUT Menu Disable")
 
-	newMenu := &model.App{}
+	newMenu := &model.Menu{}
 	err := c.BindJSON(newMenu)
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	m, err := newMenu.AppDisable(dbc)
+	m, err := newMenu.MenuDisable(dbc)
 	if err != nil {
 		fmt.Println(err)
 	}
