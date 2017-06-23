@@ -3,7 +3,8 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/itnopadol/sys_api/ctrl"
-	"gopkg.in/gin-contrib/cors.v1"
+	//"gopkg.in/gin-contrib/cors.v1"
+	"github.com/gin-gonic/contrib/cors"
 )
 
 func main(){

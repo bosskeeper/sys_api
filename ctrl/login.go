@@ -28,9 +28,14 @@ func LoginGet(c*gin.Context){
 	log.Println("call GET password",password)
 
 
-	l := new(model.Login)
+	//l := new(model.Login)
+	l := model.Login{}
+
+
 	l.AppID, _ = strconv.ParseInt(appid,10,64)
 	 err := l.LoginGetByUser(dbc,access_token,user_name,password,l.AppID)
+
+	fmt.Println("ctrl l: ",l)
 	if err != nil {
 		fmt.Println(err)
 	}

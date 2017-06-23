@@ -6,6 +6,7 @@ import (
 	//"github.com/matryer/m"
 	"log"
 	"fmt"
+	//"strconv"
 )
 
 type Login struct {
@@ -17,7 +18,7 @@ type Login struct {
 	AppID  int64 `json:"appid" db:"AppID"`
 	AppCode  string `json:"appcode" db:"AppCode"`
 	AppName  string `json:"appname" db:"AppName"`
-	menus     []*LoginSub `json:"menu"`
+	Menus     []*LoginSub `json:"menu"`
 }
 
 type LoginSub struct {
@@ -48,6 +49,7 @@ func (l *Login) LoginGetByUser(db *sqlx.DB, access_token string,user_name string
 		log.Println("Error ", err.Error())
 	}
 
+
 	sqlsub := `select f.Id as MenuID,f.MenuCode,f.MenuName,g.Id as PermissionID,g.Create,g.Update,g.Read,g.Delete` +
 		` from User as a` +
 		` left join UserRole as b on a.Id=b.UserId` +
@@ -56,12 +58,28 @@ func (l *Login) LoginGetByUser(db *sqlx.DB, access_token string,user_name string
 		` left join Menu as f on d.Id=f.AppId` +
 		` left join Permission as g on c.Id=g.RoleId and d.Id=g.AppId and f.Id=g.MenuId` +
 		` where a.UserName=? and a.Password=? and b.AppID=?`
+	//sqlsub = "select f.Id as MenuID,f.MenuCode,f.MenuName,g.Id as PermissionID,g.Create,g.Update,g.Read,g.Delete" +
+	//	" from User as a" +
+	//	" left join UserRole as b on a.Id=b.UserId " +
+	//	" left join Role as c on b.RoleId=c.Id" +
+	//	" left join App as d on b.RoleId=d.Id " +
+	//	" left join Menu as f on d.Id=f.AppId" +
+	//	" left join Permission as g on c.Id=g.RoleId and d.Id=g.AppId and f.Id=g.MenuId" +
+	//	"  where a.UserName='"+l.UserName+"' and a.Password='"+l.Password+"' and b.AppID="+ strconv.FormatInt(l.AppID, 10)
 
-		err = db.Select(&l.menus,sqlsub,l.UserName,l.Password,l.AppID)
-		fmt.Println("Menus = ", l.UserName,l.Password,l.AppID)
+	fmt.Println(sqlsub)
+
+
+
+		err = db.Select(&l.Menus,sqlsub,l.UserName,l.Password,l.AppID)
+		//err = db.Select(&l.menus,sqlsub)
+
+	fmt.Println("Menus = ", l.UserName,l.Password,l.AppID)
 		if err != nil {
 			log.Println("Error ", err.Error())
 		}
-	return nil
+	fmt.Println(l)
+
+	return err
 }
 
