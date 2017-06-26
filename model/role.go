@@ -43,16 +43,16 @@ func (r *Role) RoleGetByKeyword(db *sqlx.DB, access_token string, keyword string
 }
 
 func (r *Role) RoleGetById(db *sqlx.DB, access_token string, role_id int64) error{
-	sql := `select Id,RoleCode,RoleName,AppId,ifnull(Description,'') as Description,ActiveStatus from Role where Id = ? order by Id limit 1`
+	sql := `select a.Id,a.RoleCode,a.RoleName,ifnull(b.AppId,'') as AppId,ifnull(a.Description,'') as Description,a.ActiveStatus from Role as a`+
+		` left join UserRole as b on a.Id=b.RoleId where a.Id = ? order by a.Id limit 1`
 	r.Id = role_id
 	err := db.Get(r,sql,r.Id)
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
-	fmt.Println("MenuCode = ",r.RoleCode)
+	fmt.Println("RoleCode = ",r.RoleCode)
 	return nil
-
 }
 
 func (r *Role) RoleSave(db *sqlx.DB) (role_code string, err error){

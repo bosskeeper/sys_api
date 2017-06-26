@@ -9,6 +9,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"log"
 	//"strconv"
+	"strconv"
 )
 
 func init(){
@@ -77,5 +78,31 @@ func RoleGetByKeyword(c *gin.Context){
 			rs.Data = roles
 			c.JSON(http.StatusOK,rs)
 		}
+	}
+}
+
+func RoleGetById(c *gin.Context){
+	log.Println("call GET RoleGetById")
+	c.Keys = headerKeys
+
+	access_token := c.Request.URL.Query().Get("access_token")
+	role_id := c.Request.URL.Query().Get("role_id")
+
+	r := new(model.Role)
+	r.Id, _ = strconv.ParseInt(role_id,10,64)
+	err := r.RoleGetById(dbc,access_token,r.Id)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	rs := api.Response{}
+	if err != nil {
+		rs.Status = "error"
+		rs.Message= "No Content"+err.Error()
+		c.JSON(http.StatusNotFound,rs)
+	}else{
+		rs.Status = "success"
+		rs.Data = r
+		c.JSON(http.StatusOK,rs)
 	}
 }
