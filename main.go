@@ -38,7 +38,7 @@ func main(){
 	r.GET("/login",ctrl.LoginGet)
 
 	//r.GET("/role",ctrl.RoleGetById)
-	//r.GET("/roles/search",ctrl.RoleGetByKeyword)
+	r.GET("/roles/search",ctrl.RoleGetByKeyword)
 	r.GET("/roles",ctrl.RoleGetAll)
 	//r.POST("/role",ctrl.RoleSave)
 	//r.PUT("/role",ctrl.RoleUpdate)

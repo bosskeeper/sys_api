@@ -31,9 +31,11 @@ func (r *Role) RoleGetAll(db *sqlx.DB) (roles []*Role, err error) {
 
 }
 
-func (r *Role) RollGetByKeyword(db *sqlx.DB, access_token string, keyword string)(roles []*Role, err error){
-	sql := `select Id,RoleCode,RoleName,AppId,ifnull(Description,'') as Description,ActiveStatus from Role  where RoleCode like CONCAT("%",?,"%")  or RoleName like CONCAT("%",?,"%") order by Id `
+func (r *Role) RoleGetByKeyword(db *sqlx.DB, access_token string, keyword string)(roles []*Role, err error){
+	sql := `select a.Id,a.RoleCode,a.RoleName,ifnull(b.AppId,'') as AppId,ifnull(a.Description,'') as Description,a.ActiveStatus from Role as a`+
+		` left join UserRole as b on a.Id=b.RoleId where a.RoleCode like CONCAT("%",?,"%")  or a.RoleName like CONCAT("%",?,"%") order by a.Id `
 	err = db.Select(&roles,sql,keyword,keyword)
+	//fmt.Println(sql)
 	if err != nil {
 		return nil, err
 	}

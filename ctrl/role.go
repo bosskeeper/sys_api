@@ -9,7 +9,6 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"log"
 	//"strconv"
-	//"github.com/matryer/m"
 )
 
 func init(){
@@ -21,7 +20,7 @@ func init(){
 }
 
 func RoleGetAll(c *gin.Context){
-	log.Println("call GET RoleGetAll ")
+	log.Println("call GET RoleGetAll")
 	c.Keys = headerKeys
 
 	r := new(model.Role)
@@ -36,8 +35,47 @@ func RoleGetAll(c *gin.Context){
 		rs.Message = "No Content ="+err.Error()
 		c.JSON(http.StatusNotFound,rs)
 	}else{
-		rs.Status = "success"
-		rs.Data = roles
-		c.JSON(http.StatusOK,rs)
+		if roles==nil{
+			//fmt.Println("Yes")
+			rs.Status = "error"
+			rs.Message = "No Content: NotData"
+			c.JSON(http.StatusNotFound, rs)
+		}else {
+			rs.Status = "success"
+			rs.Data = roles
+			c.JSON(http.StatusOK,rs)
+		}
+	}
+}
+
+func RoleGetByKeyword(c *gin.Context){
+	log.Println("call GET RoleGetByKeyword")
+	c.Keys = headerKeys
+
+	access_token := c.Request.URL.Query().Get("access_token")
+	keyword := c.Request.URL.Query().Get("keyword")
+
+	r := new(model.Role)
+	roles, err := r.RoleGetByKeyword(dbc,access_token,keyword)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	rs := api.Response{}
+	if err != nil {
+		rs.Status = "error"
+		rs.Message= "No Content"+err.Error()
+		c.JSON(http.StatusNotFound,rs)
+	}else{
+		if roles==nil{
+			//fmt.Println("Yes")
+			rs.Status = "error"
+			rs.Message = "No Content: NotData"
+			c.JSON(http.StatusNotFound, rs)
+		}else {
+			rs.Status = "success"
+			rs.Data = roles
+			c.JSON(http.StatusOK,rs)
+		}
 	}
 }
