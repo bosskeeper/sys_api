@@ -21,7 +21,8 @@ type Role struct {
 
 
 func (r *Role) RoleGetAll(db *sqlx.DB) (roles []*Role, err error) {
-	sql := `select Id,RoleCode,RoleName,AppId,ifnull(Description,'') as Description,ActiveStatus from Role  order by Id `
+	sql := `select a.Id,a.RoleCode,a.RoleName,ifnull(b.AppId,'') as AppId,ifnull(a.Description,'') as Description,a.ActiveStatus from Role as a`+
+		` left join UserRole as b on a.Id=b.RoleId order by a.Id`
 	err = db.Select(&roles,sql)
 	if err != nil {
 		return nil, err
