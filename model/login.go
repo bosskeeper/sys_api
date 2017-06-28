@@ -35,17 +35,17 @@ type LoginSub struct {
 }
 
 
-func (l *Login) LoginGetByUser(db *sqlx.DB, access_token string,user_name string,password string,appid int64) (err error) {
+func (l *Login) LoginGetByUser(db *sqlx.DB, access_token string,user_code string,password string,appid int64) (err error) {
 	sql := `select a.Id,a.UserCode,a.UserName,a.Password,c.RoleCode,c.RoleName,b.AppID,d.AppCode,d.AppName`+
 		` from User as a`+
 		` left join UserRole as b on a.Id=b.UserId`+
 		` left join Role as c on b.RoleId=c.Id`+
 		` left join App as d on b.RoleId=d.Id`+
-		` where a.UserName=? and a.Password=? and b.AppID=? limit 1`
-	l.UserName = user_name
+		` where a.UserCode=? and a.Password=? and b.AppID=? limit 1`
+	l.UserCode = user_code
 	l.Password = password
 	l.AppID = appid
-		err = db.Get(l,sql,l.UserName,l.Password,l.AppID)
+		err = db.Get(l,sql,l.UserCode,l.Password,l.AppID)
 	log.Println("Error ",sql)
 	//fmt.Println("UserID = ",l.Id)
 	if err != nil {
@@ -60,7 +60,7 @@ func (l *Login) LoginGetByUser(db *sqlx.DB, access_token string,user_name string
 		` left join App as d on b.RoleId=d.Id` +
 		` left join Menu as f on d.Id=f.AppId` +
 		` left join Permission as g on c.Id=g.RoleId and d.Id=g.AppId and f.Id=g.MenuId` +
-		` where a.UserName=? and a.Password=? and b.AppID=?`
+		` where a.UserCode=? and a.Password=? and b.AppID=?`
 	//sqlsub = "select f.Id as MenuID,f.MenuCode,f.MenuName,g.Id as PermissionID,g.Create,g.Update,g.Read,g.Delete" +
 	//	" from User as a" +
 	//	" left join UserRole as b on a.Id=b.UserId " +
@@ -74,10 +74,10 @@ func (l *Login) LoginGetByUser(db *sqlx.DB, access_token string,user_name string
 
 
 
-		err = db.Select(&l.Menus,sqlsub,l.UserName,l.Password,l.AppID)
+		err = db.Select(&l.Menus,sqlsub,l.UserCode,l.Password,l.AppID)
 		//err = db.Select(&l.menus,sqlsub)
 
-	fmt.Println("Menus = ", l.UserName,l.Password,l.AppID)
+	fmt.Println("Menus = ", l.UserCode,l.Password,l.AppID)
 		if err != nil {
 			log.Println("Error ", err.Error())
 		}

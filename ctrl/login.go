@@ -20,11 +20,11 @@ func LoginGet(c*gin.Context){
 	c.Keys = headerKeys
 
 	access_token := c.Request.URL.Query().Get("access_token")
-	user_name := c.Request.URL.Query().Get("username")
+	user_code := c.Request.URL.Query().Get("usercode")
 	password := c.Request.URL.Query().Get("password")
 	appid := c.Request.URL.Query().Get("appid")
 
-	log.Println("call GET username",user_name)
+	log.Println("call GET username",user_code)
 	log.Println("call GET password",password)
 
 
@@ -33,7 +33,7 @@ func LoginGet(c*gin.Context){
 
 
 	l.AppID, _ = strconv.ParseInt(appid,10,64)
-	 err := l.LoginGetByUser(dbc,access_token,user_name,password,l.AppID)
+	 err := l.LoginGetByUser(dbc,access_token,user_code,password,l.AppID)
 
 	fmt.Println("ctrl l: ",l)
 	if err != nil {
