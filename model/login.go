@@ -11,7 +11,7 @@ import (
 )
 
 type Login struct {
-	Id 	 int `json:"id" db;"Id"`
+	Id 	 int64 `json:"id" db:"Id"`
 	UserCode string `json:"usercode" db:"UserCode"`
 	UserName string `json:"username" db:"UserName"`
 	Password string `json:"password" db:"Password"`
@@ -47,6 +47,7 @@ func (l *Login) LoginGetByUser(db *sqlx.DB, access_token string,user_name string
 	l.AppID = appid
 		err = db.Get(l,sql,l.UserName,l.Password,l.AppID)
 	log.Println("Error ",sql)
+	//fmt.Println("UserID = ",l.Id)
 	if err != nil {
 		log.Println("Error ", err.Error())
 	}
@@ -82,6 +83,6 @@ func (l *Login) LoginGetByUser(db *sqlx.DB, access_token string,user_name string
 		}
 	fmt.Println(l)
 
-	return err
+	return nil
 }
 
