@@ -20,6 +20,87 @@ func init(){
 	dbc = db
 }
 
+
+func RoleSave(c *gin.Context){
+	c.Keys = headerKeys
+	newRole := &model.Role{}
+
+	err := c.BindJSON(newRole)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	r, err := newRole.RoleSave(dbc)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	rs := api.Response{}
+	if err != nil {
+		rs.Status="error"
+		rs.Message="No Content "+ err.Error()
+		c.JSON(http.StatusNotFound,rs)
+	}else {
+		rs.Status="success"
+		rs.Data = r
+		c.JSON(http.StatusOK,rs)
+	}
+}
+
+
+func RoleUpdate(c *gin.Context){
+	c.Keys = headerKeys
+	newRole := &model.Role{}
+
+	err := c.BindJSON(newRole)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	r, err := newRole.RoleUpdate(dbc)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	rs := api.Response{}
+	if err != nil {
+		rs.Status="error"
+		rs.Message="No Content "+ err.Error()
+		c.JSON(http.StatusNotFound,rs)
+	}else {
+		rs.Status="success"
+		rs.Data = r
+		c.JSON(http.StatusOK,rs)
+	}
+}
+
+
+func RoleDisable(c *gin.Context){
+	c.Keys = headerKeys
+	newRole := &model.Role{}
+
+	err := c.BindJSON(newRole)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	r, err := newRole.RoleDisable(dbc)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	rs := api.Response{}
+	if err != nil {
+		rs.Status="error"
+		rs.Message="No Content "+ err.Error()
+		c.JSON(http.StatusNotFound,rs)
+	}else {
+		rs.Status="success"
+		rs.Data = r
+		c.JSON(http.StatusOK,rs)
+	}
+}
+
 func RoleGetAll(c *gin.Context){
 	log.Println("call GET RoleGetAll")
 	c.Keys = headerKeys
@@ -106,3 +187,5 @@ func RoleGetById(c *gin.Context){
 		c.JSON(http.StatusOK,rs)
 	}
 }
+
+
