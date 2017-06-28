@@ -20,8 +20,7 @@ type Role struct {
 
 
 func (r *Role) RoleGetAll(db *sqlx.DB) (roles []*Role, err error) {
-	sql := `select a.Id,a.RoleCode,a.RoleName,ifnull(b.AppId,'') as AppId,ifnull(a.Description,'') as Description,a.ActiveStatus from Role as a`+
-		` left join UserRole as b on a.Id=b.RoleId order by a.Id`
+	sql := `select a.Id,a.RoleCode,a.RoleName,ifnull(a.Description,'') as Description,a.ActiveStatus from Role as a`
 	err = db.Select(&roles,sql)
 	if err != nil {
 		return nil, err
@@ -31,8 +30,7 @@ func (r *Role) RoleGetAll(db *sqlx.DB) (roles []*Role, err error) {
 }
 
 func (r *Role) RoleGetByKeyword(db *sqlx.DB, access_token string, keyword string)(roles []*Role, err error){
-	sql := `select a.Id,a.RoleCode,a.RoleName,ifnull(b.AppId,'') as AppId,ifnull(a.Description,'') as Description,a.ActiveStatus from Role as a`+
-		` left join UserRole as b on a.Id=b.RoleId where a.RoleCode like CONCAT("%",?,"%")  or a.RoleName like CONCAT("%",?,"%") order by a.Id `
+	sql := `select a.Id,a.RoleCode,a.RoleName,ifnull(a.Description,'') as Description,a.ActiveStatus from Role as a where a.RoleCode like CONCAT("%",?,"%")  or a.RoleName like CONCAT("%",?,"%") order by a.Id `
 	err = db.Select(&roles,sql,keyword,keyword)
 	//fmt.Println(sql)
 	if err != nil {
@@ -42,8 +40,7 @@ func (r *Role) RoleGetByKeyword(db *sqlx.DB, access_token string, keyword string
 }
 
 func (r *Role) RoleGetById(db *sqlx.DB, access_token string, role_id int64) error{
-	sql := `select a.Id,a.RoleCode,a.RoleName,ifnull(b.AppId,'') as AppId,ifnull(a.Description,'') as Description,a.ActiveStatus from Role as a`+
-		` left join UserRole as b on a.Id=b.RoleId where a.Id = ? order by a.Id limit 1`
+	sql := `select a.Id,a.RoleCode,a.RoleName,ifnull(a.Description,'') as Description,a.ActiveStatus from Role as a where a.Id = ? order by a.Id limit 1`
 	r.Id = role_id
 	err := db.Get(r,sql,r.Id)
 	if err != nil {

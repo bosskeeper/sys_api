@@ -7,9 +7,11 @@ import (
 	"log"
 	"fmt"
 	//"strconv"
+//	"golang.org/x/net/icmp"
 )
 
 type Login struct {
+	Id 	 int `json:"id" db;"Id"`
 	UserCode string `json:"usercode" db:"UserCode"`
 	UserName string `json:"username" db:"UserName"`
 	Password string `json:"password" db:"Password"`
@@ -34,7 +36,7 @@ type LoginSub struct {
 
 
 func (l *Login) LoginGetByUser(db *sqlx.DB, access_token string,user_name string,password string,appid int64) (err error) {
-	sql := `select a.UserCode,a.UserName,a.Password,c.RoleCode,c.RoleName,b.AppID,d.AppCode,d.AppName`+
+	sql := `select a.Id,a.UserCode,a.UserName,a.Password,c.RoleCode,c.RoleName,b.AppID,d.AppCode,d.AppName`+
 		` from User as a`+
 		` left join UserRole as b on a.Id=b.UserId`+
 		` left join Role as c on b.RoleId=c.Id`+
