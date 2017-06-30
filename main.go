@@ -44,6 +44,8 @@ func main(){
 	r.PUT("/role",ctrl.RoleUpdate)
 	r.PUT("/role/disable",ctrl.RoleDisable)
 
+	r.GET("/permissions",ctrl.PermissionGetAll)
+
 	r.Run(":9000")
 
 }

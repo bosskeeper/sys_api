@@ -26,7 +26,6 @@ func (r *Role) RoleGetAll(db *sqlx.DB) (roles []*Role, err error) {
 		return nil, err
 	}
 	return roles, nil
-
 }
 
 func (r *Role) RoleGetByKeyword(db *sqlx.DB, access_token string, keyword string)(roles []*Role, err error){
