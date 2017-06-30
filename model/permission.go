@@ -38,3 +38,21 @@ func (p *Permission) PermissionGetAll(db *sqlx.DB, access_token string, app_id i
 	fmt.Println("RoleCode = ",p.RoleCode)
 	return permissions,nil
 }
+
+func (p *Permission) PermissionGetByMenu (db *sqlx.DB, access_token string, app_id int64, role_id int64, menu_id int64)  error {
+	sql := `select a.Id,a.AppId,b.AppCode,b.AppName,a.RoleId,c.RoleCode,c.RoleName`+
+		` ,a.MenuId,d.MenuCode,d.MenuName,a.Create,a.Read,a.Update,a.Delete`+
+		` from Permission as a left join App as b on a.AppId=b.Id`+
+		` left join Role as c on a.RoleId=c.Id`+
+		` left join Menu as d on a.MenuId=d.Id where a.AppId=? and a.RoleId=? and a.MenuId=?`
+	p.AppId = app_id
+	p.RoleId=role_id
+	p.MenuId=menu_id
+	err := db.Get(p,sql,p.AppId,p.RoleId,p.MenuId)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	fmt.Println("RoleCode = ",p.RoleCode)
+	return nil
+}

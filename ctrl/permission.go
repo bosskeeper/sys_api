@@ -46,3 +46,40 @@ func PermissionGetAll(c *gin.Context){
 		}
 	}
 }
+
+func PermissionGetByMenu(c *gin.Context){
+	log.Println("call GET PermissionGetByMenu")
+	c.Keys = headerKeys
+
+	access_token := c.Request.URL.Query().Get("access_token")
+	app_id := c.Request.URL.Query().Get("app_id")
+	role_id := c.Request.URL.Query().Get("role_id")
+	menu_id := c.Request.URL.Query().Get("menu_id")
+
+	p := new(model.Permission)
+	p.AppId, _ = strconv.ParseInt(app_id,10,64)
+	p.RoleId, _ = strconv.ParseInt(role_id,10,64)
+	p.MenuId, _ = strconv.ParseInt(menu_id,10,64)
+	err := p.PermissionGetByMenu(dbc,access_token,p.AppId,p.RoleId,p.MenuId)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	rs := api.Response{}
+	if err != nil {
+		rs.Status = "error"
+		rs.Message = "No Content ="+err.Error()
+		c.JSON(http.StatusNotFound,rs)
+	}else{
+		if p==nil{
+			//fmt.Println("Yes")
+			rs.Status = "error"
+			rs.Message = "No Content: NotData"
+			c.JSON(http.StatusNotFound, rs)
+		}else {
+			rs.Status = "success"
+			rs.Data = p
+			c.JSON(http.StatusOK,rs)
+		}
+	}
+}
