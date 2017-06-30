@@ -46,8 +46,18 @@ func LoginGet(c*gin.Context){
 		rs.Message = "No Content ="+err.Error()
 		c.JSON(http.StatusNotFound,rs)
 	}else{
-		rs.Status = "success"
-		rs.Data = l
-		c.JSON(http.StatusOK,rs)
+		if l.Id==0{
+			rs.Status = "error"
+			rs.Message = "No Content = UserName or Password Invalid"
+			c.JSON(http.StatusNotFound,rs)
+		}else if l.Id != 0 && l.Menus == nil{
+			rs.Status = "error"
+			rs.Message = "No Content = UserName Not Permission"
+			c.JSON(http.StatusNotFound,rs)
+		}else {
+			rs.Status = "success"
+			rs.Data = l
+			c.JSON(http.StatusOK,rs)
+			}
 	}
 }
