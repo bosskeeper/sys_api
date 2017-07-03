@@ -178,7 +178,6 @@ func (u *User) GetUserNotExist(db *sqlx.DB) error {
 		fmt.Println(err)
 		return err
 	}
-
 	return nil
 }
 

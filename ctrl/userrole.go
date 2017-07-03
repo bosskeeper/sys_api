@@ -78,3 +78,32 @@ func UserRoleGetUser(c *gin.Context){
 		}
 	}
 }
+
+func UserRoleSave(c *gin.Context){
+	log.Println("call POST UserRoleSave")
+	c.Keys = headerKeys
+
+	newUserRole := &model.UserRole{}
+	err := c.BindJSON(newUserRole)
+	if err != nil {
+		fmt.Println(err)
+	}
+	a, _ := newUserRole.UserRoleSave(dbc)
+
+	rs := api.Response{}
+	if err != nil {
+		rs.Status = "error"
+		rs.Message = "No Content = "+err.Error()
+		c.JSON(http.StatusNotFound,rs)
+	}else{
+		if a==0{
+			rs.Status = "error"
+			rs.Message = "No Content = Duplicate key"
+			c.JSON(http.StatusNotFound,rs)
+		}else {
+			rs.Status = "success"
+			rs.Data = a
+			c.JSON(http.StatusOK,rs)
+			}
+	}
+}
