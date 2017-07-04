@@ -47,6 +47,7 @@ func main(){
 	r.GET("/userroles",ctrl.UserRoleGetAll)
 	r.GET("/userrole",ctrl.UserRoleGetUser)
 	r.POST("/userrole",ctrl.UserRoleSave)
+	r.PUT("/userrole",ctrl.UserRoleUpdate)
 
 	r.GET("/permissions",ctrl.PermissionGetAll)
 	r.GET("/permission",ctrl.PermissionGetByMenu)

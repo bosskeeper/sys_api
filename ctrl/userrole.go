@@ -107,3 +107,36 @@ func UserRoleSave(c *gin.Context){
 			}
 	}
 }
+
+func UserRoleUpdate(c *gin.Context){
+	c.Keys = headerKeys
+	newUserRole := &model.UserRole{}
+
+	err := c.BindJSON(newUserRole)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	ur, _ := newUserRole.UserRoleUpdate(dbc)
+	if err != nil {
+		fmt.Println(err)
+	}
+	//fmt.Println(ur)
+
+	rs := api.Response{}
+	if err != nil {
+		rs.Status="error"
+		rs.Message="No Content "+ err.Error()
+		c.JSON(http.StatusNotFound,rs)
+	}else {
+		if ur==0{
+			rs.Status = "error"
+			rs.Message = "No Content = User Not Found "
+			c.JSON(http.StatusNotFound,rs)
+		}else {
+			rs.Status = "success"
+			rs.Data = ur
+			c.JSON(http.StatusOK,rs)
+		}
+	}
+}

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	//"time"
 	//"github.com/revel/modules/db/app"
+	"time"
 )
 
 type UserRole struct {
@@ -18,6 +19,10 @@ type UserRole struct {
 	RoleId       int64 `json:"role_id" db:"RoleId"`
 	RoleCode string `json:"role_code" db:"RoleCode"`
 	RoleName string `json:"role_name" db:"RoleName"`
+	CreatorId int `json:"creator_id" db:"CreatorId"`
+	CreateDateTime string `json:"create_date_time,omitempty" db:"CreateDateTime"`
+	EditorId int `json:"editor_id" db:"EditorId"`
+	EditDateTime string `json:"edit_date_time,omitempty" db:"EditDateTime"`
 }
 
 func (ur *UserRole)UserRoleGetAll(db *sqlx.DB, access_token string, app_id int64) (userroles []*UserRole,err error){
@@ -57,9 +62,11 @@ func (ur *UserRole) UserRoleSave(db *sqlx.DB) (user_id int64, err error){
 	fmt.Println("UserRole = ",ur.Id)
 	err = ur.GetUserRoleNotExist(db)
 
-	sql := `insert into UserRole(AppId,UserId,RoleId) values(?,?,?)`
+	ur.CreateDateTime = time.Now().String()
+	ur.CreatorId = 1
+	sql := `insert into UserRole(AppId,UserId,RoleId,CreatorId,CreateDateTime) values(?,?,?,?,?)`
 	fmt.Println("sql = ",sql)
-	res, err := db.Exec(sql,ur.AppId,ur.UserId,ur.RoleId)
+	res, err := db.Exec(sql,ur.AppId,ur.UserId,ur.RoleId,ur.CreatorId,ur.CreateDateTime)
 	if err != nil {
 		fmt.Println(err)
 		return 0,err
@@ -68,6 +75,28 @@ func (ur *UserRole) UserRoleSave(db *sqlx.DB) (user_id int64, err error){
 	id, _ := res.LastInsertId()
 	fmt.Println("Last Insert Id = ",id)
 	return id, nil
+}
+
+func (ur *UserRole) UserRoleUpdate(db *sqlx.DB)(user_id int64, err error){
+	fmt.Println("UserRole = ",ur.Id)
+	err = ur.GetUserRoleNotExist(db)
+
+	ur.EditDateTime = time.Now().String()
+	ur.EditorId = 3
+	sql := `update UserRole set RoleId=?,EditorId=?,EditDateTime=? where id = ?`
+	res, err := db.Exec(sql,ur.RoleId,ur.EditorId,ur.EditDateTime,ur.Id)
+	if err != nil {
+		fmt.Println(err)
+		return 0, err
+	}
+	user_id = ur.Id
+	update, err :=res.RowsAffected()
+	if err != nil {
+		fmt.Println(err)
+		return 0, err
+	}
+	fmt.Println("status",update)
+	return update, nil
 }
 
 func (ur *UserRole) GetUserRoleNotExist(db *sqlx.DB) error {
