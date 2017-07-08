@@ -56,9 +56,15 @@ func LoginGet(c*gin.Context){
 			//rs.Message = "No Content = UserName Not Permission"
 			//c.JSON(http.StatusNotFound,rs)
 		}else {
-			rs.Status = "success"
-			rs.Data = l
-			c.JSON(http.StatusOK,rs)
-			}
+			if l.UserActiveStatus == 0 {
+				rs.Status = "error"
+				rs.Message = "No Content = UserName Not Active"
+				c.JSON(http.StatusNotFound, rs)
+			}else {
+				rs.Status = "success"
+				rs.Data = l
+				c.JSON(http.StatusOK,rs)
+				}
+		}
 	}
 }

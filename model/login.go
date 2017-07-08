@@ -15,6 +15,7 @@ type Login struct {
 	UserCode string `json:"usercode" db:"UserCode"`
 	UserName string `json:"username" db:"UserName"`
 	Password string `json:"password" db:"Password"`
+	UserActiveStatus int64 `json:"usercctivestatus" db:"UserActiveStatus"`
 	RoleCode string `json:"rolecode" db:"RoleCode"`
 	RoleName string `json:"rolename" db:"RoleName"`
 	AppID  int64 `json:"appid" db:"AppID"`
@@ -36,7 +37,7 @@ type LoginSub struct {
 
 
 func (l *Login) LoginGetByUser(db *sqlx.DB, access_token string,user_code string,password string,appid int64) (err error) {
-	sql := `select a.Id,a.UserCode,a.UserName,a.Password,c.RoleCode,c.RoleName,b.AppID,d.AppCode,d.AppName`+
+	sql := `select a.Id,a.UserCode,a.UserName,a.Password,a.ActiveStatus as UserActiveStatus,c.RoleCode,c.RoleName,b.AppID,d.AppCode,d.AppName`+
 		` from User as a`+
 		` left join UserRole as b on a.Id=b.UserId`+
 		` left join Role as c on b.RoleId=c.Id`+
@@ -61,7 +62,7 @@ func (l *Login) LoginGetByUser(db *sqlx.DB, access_token string,user_code string
 		` left join App as d on b.AppId=d.Id` +
 		` left join Menu as f on d.Id=f.AppId` +
 		` left join Permission as g on c.Id=g.RoleId and d.Id=g.AppId and f.Id=g.MenuId` +
-		` where a.UserCode=? and a.Password=? and b.AppID=?`
+		` where a.UserCode=? and a.Password=? and b.AppID=? and f.activestatus=1`
 	//sqlsub = "select f.Id as MenuID,f.MenuCode,f.MenuName,g.Id as PermissionID,g.Create,g.Update,g.Read,g.Delete" +
 	//	" from User as a" +
 	//	" left join UserRole as b on a.Id=b.UserId " +
