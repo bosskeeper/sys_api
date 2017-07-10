@@ -26,6 +26,7 @@ func main(){
 	r.POST("/app",ctrl.AppSave)
 	r.PUT("/app",ctrl.AppUpdate)
 	r.PUT("/app/disable",ctrl.AppDisable)
+	r.GET("/app/role",ctrl.AppGetByRole)
 
 	r.GET("/menu",ctrl.MenuGetById)
 	r.GET("/menus/search",ctrl.MenuGetByKeyword)

@@ -13,6 +13,9 @@ type App struct {
 	AppName	string `json:"app_name" db:"AppName"`
 	Description string `json:"description" db:"Description"`
 	ActiveStatus int `json:"active_status" db:"ActiveStatus"`
+	RoleId int64 `json:"role_id" db:"RoleId"`
+	RoleCode string `json:"role_code" db:"RoleCode"`
+	RoleName string `json:"role_name" db:"RoleName"`
 	CreatorId int `json:"creator_id" db:"CreatorId"`
 	CreateDateTime string `json:"create_date_time,omitempty" db:"CreateDateTime"`
 	EditorId int `json:"editor_id" db:"EditorId"`
@@ -48,6 +51,19 @@ func (a *App) AppGetById(db *sqlx.DB, access_token string, app_id int64) error{
 	}
 	fmt.Println("AppCode = ",a.AppCode)
 	return nil
+}
+
+func (a *App) AppGetByRole(db *sqlx.DB, access_token string, app_id int64) (apps []*App, err error){
+	sql := `select a.Id,a.AppCode,a.AppName,b.RoleId,c.RoleCode,c.RoleName`+
+	       	` from App as a left join AppRole as b on a.Id=b.AppId`+
+		` left join Role as c on b.RoleId=c.Id`+
+		` where a.Id = ? order by Id`
+	err = db.Select(&apps,sql,app_id)
+	fmt.Println("sql = ",sql)
+	if err != nil {
+		return nil, err
+	}
+	return apps, nil
 }
 
 func (a *App) AppGetByAppCode(db *sqlx.DB, access_token string, app_code string) error{
