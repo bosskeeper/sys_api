@@ -81,6 +81,28 @@ func (p *Permission) PermissionSave(db *sqlx.DB) (permission_id int64, err error
 	return id, nil
 }
 
+func (p *Permission) PermissionUpdate(db *sqlx.DB)(permission_id int64, err error){
+	fmt.Println("Permission = ",p.Id)
+	err = p.GetPermissionNotExist(db)
+
+	p.EditDateTime = time.Now().String()
+	p.EditorId = 1
+	sql := `update Permission set IsCreate=?,IsRead=?,IsUpdate=?,IsDelete=?,EditorId=?,EditDateTime=? where id = ?`
+	res, err := db.Exec(sql,p.IsCreate,p.IsRead,p.IsUpdate,p.IsDelete,p.EditorId,p.EditDateTime,p.Id)
+	if err != nil {
+		fmt.Println(err)
+		return 0, err
+	}
+	permission_id = p.Id
+	update, err :=res.RowsAffected()
+	if err != nil {
+		fmt.Println(err)
+		return 0, err
+	}
+	fmt.Println("status",update)
+	return update, nil
+}
+
 func (p *Permission) GetPermissionNotExist(db *sqlx.DB) error {
 	sql := `select Id from Permission where Id = ?`
 	err := db.Get(p, sql, p.Id)

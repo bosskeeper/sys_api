@@ -112,3 +112,36 @@ func PermissionSave(c *gin.Context){
 		}
 	}
 }
+
+func PermissionUpdate(c *gin.Context){
+	c.Keys = headerKeys
+	newPermission := &model.Permission{}
+
+	err := c.BindJSON(newPermission)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	ur, _ := newPermission.PermissionUpdate(dbc)
+	if err != nil {
+		fmt.Println(err)
+	}
+	//fmt.Println(ur)
+
+	rs := api.Response{}
+	if err != nil {
+		rs.Status="error"
+		rs.Message="No Content "+ err.Error()
+		c.JSON(http.StatusNotFound,rs)
+	}else {
+		if ur==0{
+			rs.Status = "error"
+			rs.Message = "No Content = Data Not Found "
+			c.JSON(http.StatusNotFound,rs)
+		}else {
+			rs.Status = "success"
+			rs.Data = ur
+			c.JSON(http.StatusOK,rs)
+		}
+	}
+}
