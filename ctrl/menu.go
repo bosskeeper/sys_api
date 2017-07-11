@@ -121,7 +121,7 @@ func MenuGetByKeyword(c *gin.Context){
 }
 
 func MenuSave(c *gin.Context){
-	log.Println("call POST AppSave()")
+	log.Println("call POST MenuSave")
 	c.Keys = headerKeys
 
 	newMenu := &model.Menu{}
