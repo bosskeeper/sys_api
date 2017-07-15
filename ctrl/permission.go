@@ -10,6 +10,7 @@ import (
 	"log"
 	//"strconv"
 	"strconv"
+	//"golang.org/x/tools/go/gcimporter15/testdata"
 )
 
 func PermissionGetAll(c *gin.Context){
@@ -84,16 +85,25 @@ func PermissionGetByMenu(c *gin.Context){
 	}
 }
 
+
 func PermissionSave(c *gin.Context){
 	log.Println("call POST PermissionSave")
 	c.Keys = headerKeys
 
-	newPermission := &model.Permission{}
-	err := c.BindJSON(newPermission)
+	//p := model.Permission{}
+	//data := []model.Permission{}
+	//data := Permissions{}
+	x := model.Permissions{}
+	err := c.BindJSON(&x)
+	fmt.Println(x)
+
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("Binding Json Error Step ",err)
 	}
-	a, _ := newPermission.PermissionSave(dbc)
+
+
+
+	x.PermissionSaveAll(dbc)
 
 	rs := api.Response{}
 	if err != nil {
@@ -101,15 +111,11 @@ func PermissionSave(c *gin.Context){
 		rs.Message = "No Content = "+err.Error()
 		c.JSON(http.StatusNotFound,rs)
 	}else{
-		if a==0{
-			rs.Status = "error"
-			rs.Message = "No Content = Duplicate key"
-			c.JSON(http.StatusNotFound,rs)
-		}else {
+
 			rs.Status = "success"
-			rs.Data = a
+			rs.Data = x
 			c.JSON(http.StatusOK,rs)
-		}
+
 	}
 }
 

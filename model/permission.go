@@ -4,28 +4,35 @@ import (
 	"github.com/jmoiron/sqlx"
 	"fmt"
 	"time"
+//	"strings"
 )
 
 type Permission struct {
-	Id 	 int64 `json:"id" db:"Id"`
+	Id int64 `json:"id" db:"Id",omitempty`
 	AppId  int64 `json:"app_id" db:"AppId"`
-	AppCode  string `json:"app_code" db:"AppCode"`
-	AppName  string `json:"app_name" db:"AppName"`
+	AppCode  string `json:"app_code" db:"AppCode",omitempty`
+	AppName  string `json:"app_name" db:"AppName",omitempty`
 	RoleId int64 `json:"role_id" db:"RoleId"`
-	RoleCode string `json:"role_code" db:"RoleCode"`
-	RoleName string `json:"role_name" db:"RoleName"`
+	RoleCode string `json:"role_code" db:"RoleCode",omitempty`
+	RoleName string `json:"role_name" db:"RoleName",omitempty`
 	MenuId int64 `json:"menu_id" db:"MenuId"`
-	MenuCode string `json:"menu_code" db:"MenuCode"`
-	MenuName string `json:"menu_name" db:"MenuName"`
+	MenuCode string `json:"menu_code" db:"MenuCode",omitempty`
+	MenuName string `json:"menu_name" db:"MenuName",omitempty`
 	IsCreate int64 `json:"is_create" db:"IsCreate"`
 	IsRead int64 `json:"is_read" db:"IsRead"`
 	IsUpdate int64 `json:"is_update" db:"IsUpdate"`
 	IsDelete int64 `json:"is_delete" db:"IsDelete"`
-	CreatorId int `json:"creator_id" db:"CreatorId"`
+	CreatorId int `json:"creator_id" db:"CreatorId",omitempty`
 	CreateDateTime string `json:"create_date_time,omitempty" db:"CreateDateTime"`
 	EditorId int `json:"editor_id" db:"EditorId"`
 	EditDateTime string `json:"edit_date_time,omitempty" db:"EditDateTime"`
 }
+
+type Permissions struct {
+	Data []Permission `json:"data"`
+}
+
+
 
 func (p *Permission) PermissionGetAll(db *sqlx.DB, access_token string, app_id int64, role_id int64) (permissions []*Permission, err error){
 	sql := `select a.Id,a.AppId,b.AppCode,b.AppName,a.RoleId,c.RoleCode,c.RoleName`+
@@ -109,6 +116,35 @@ func (p *Permission) GetPermissionNotExist(db *sqlx.DB) error {
 	fmt.Println("Get Permission =",p.Id)
 	if err != nil {
 		fmt.Println(err)
+		return err
+	}
+	return nil
+}
+
+func (ps *Permissions)PermissionSaveAll(db *sqlx.DB) error{
+	for _, k := range  ps.Data{
+			// todo : delete old permission  appid,roleid,menuid
+			err := k.PermissionDelete(db)
+
+			//todo : insert
+			_,err = k.PermissionSave(db)
+			if err != nil{
+				return err
+			}
+
+	}
+
+	return nil
+}
+
+
+func (p *Permission)PermissionDelete(db *sqlx.DB) error{
+	fmt.Println(p)
+	lccommand :=`delete from Permission where appid= ? and roleid=? and menuid = ?`
+	fmt.Println(lccommand)
+	_,err := db.Exec(lccommand,p.AppId,p.RoleId,p.MenuId)
+	if err != nil{
+		fmt.Println(err.Error())
 		return err
 	}
 	return nil

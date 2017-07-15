@@ -25,7 +25,6 @@ func init(){
 func AppGetAll(c *gin.Context){
 	log.Println("call GET AppGetAll()")
 	c.Keys = headerKeys
-
 	newApp := &model.App{}
 	apps, err := newApp.AppGetAll(dbc)
 	if err != nil {
