@@ -54,7 +54,6 @@ func main(){
 	r.GET("/permission",ctrl.PermissionGetByMenu)
 	r.POST("/permission",ctrl.PermissionSave)
 	r.PUT("/permission",ctrl.PermissionUpdate)
-	fmt.Println("test")
 	r.Run(":9000")
 
 }
