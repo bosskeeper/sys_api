@@ -91,12 +91,12 @@ func (m *Menu) MenuSave(db *sqlx.DB) (menu_code string, err error){
 
 	fmt.Println("Last Insert Id = ",id)
 
-	sql2 := `INSERT Permission (AppId,RoleId,MenuId,IsCreate,IsRead,IsUpdate,IsDelete,CreatorId,CreateDateTime)`+
-		` select a.AppId,b.RoleId,a.id as MenuId,0 as IsCreate,0 as IsRead,0 as IsUpdate,0 as IsDelete,? as CreatorId,? as CreateDateTime`+
-		` from Menu as a left join AppRole as b on a.AppId=b.AppId where a.Id=?`
-	res2, err := db.Exec(sql2,m.CreatorId,m.CreateDateTime,id)
-	id2, _ := res2.LastInsertId()
-	fmt.Println("sql2 = ",id2,sql2,m.CreatorId,m.CreateDateTime,id)
+	//sql2 := `INSERT Permission (AppId,RoleId,MenuId,IsCreate,IsRead,IsUpdate,IsDelete,CreatorId,CreateDateTime)`+
+	//	` select a.AppId,b.RoleId,a.id as MenuId,0 as IsCreate,0 as IsRead,0 as IsUpdate,0 as IsDelete,? as CreatorId,? as CreateDateTime`+
+	//	` from Menu as a left join AppRole as b on a.AppId=b.AppId where a.Id=?`
+	//res2, err := db.Exec(sql2,m.CreatorId,m.CreateDateTime,id)
+	//id2, _ := res2.LastInsertId()
+	//fmt.Println("sql2 = ",id2,sql2,m.CreatorId,m.CreateDateTime,id)
 	return menu_code, nil
 }
 
