@@ -53,7 +53,6 @@ func (l *Login) LoginGetByUser(db *sqlx.DB, access_token string,user_code string
 		log.Println("Error ", err.Error())
 	}
 
-
 	sqlsub := `select f.Id as MenuID,f.MenuCode,f.MenuName,ifnull(g.Id,0) as PermissionID,ifnull(g.IsCreate,0) as IsCreate` +
 		` ,ifnull(g.IsUpdate,0) as IsUpdate,ifnull(g.IsRead,0) as IsRead,ifnull(g.IsDelete,0) as IsDelete` +
 		` from User as a` +
