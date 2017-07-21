@@ -54,8 +54,8 @@ func (l *Login) LoginGetByUser(db *sqlx.DB, access_token string,user_code string
 	}
 
 
-	sqlsub := `select f.Id as MenuID,f.MenuCode,f.MenuName,ifnull(g.Id,0) as PermissionID,ifnull(g.IsCreate,1) as IsCreate` +
-		` ,ifnull(g.IsUpdate,1) as IsUpdate,ifnull(g.IsRead,1) as IsRead,ifnull(g.IsDelete,1) as IsDelete` +
+	sqlsub := `select f.Id as MenuID,f.MenuCode,f.MenuName,ifnull(g.Id,0) as PermissionID,ifnull(g.IsCreate,0) as IsCreate` +
+		` ,ifnull(g.IsUpdate,0) as IsUpdate,ifnull(g.IsRead,0) as IsRead,ifnull(g.IsDelete,0) as IsDelete` +
 		` from User as a` +
 		` left join UserRole as b on a.Id=b.UserId` +
 		` left join Role as c on b.RoleId=c.Id` +

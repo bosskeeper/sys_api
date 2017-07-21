@@ -45,7 +45,6 @@ func (u *User)UserGetByUserCode(db *sqlx.DB, access_token string, user_code stri
 		fmt.Println(err.Error())
 		return err
 	}
-
 	return nil
 }
 
