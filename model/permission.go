@@ -123,7 +123,12 @@ func (p *Permission) GetPermissionNotExist(db *sqlx.DB) error {
 
 func (ps *Permissions)PermissionSaveAll(db *sqlx.DB) error{
 	for _, k := range  ps.Data{
+
+			// todo : check exists permission
+			// if exists
+			// todo : update
 			// todo : delete old permission  appid,roleid,menuid
+
 			err := k.PermissionDelete(db)
 
 			//todo : insert
