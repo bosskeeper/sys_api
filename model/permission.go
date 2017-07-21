@@ -35,28 +35,50 @@ type Permissions struct {
 
 
 func (p *Permission) PermissionGetAll(db *sqlx.DB, access_token string, app_id int64, role_id int64) (permissions []*Permission, err error){
-	sql := `select a.Id,a.AppId,b.AppCode,b.AppName,a.RoleId,c.RoleCode,c.RoleName`+
-		` ,a.MenuId,d.MenuCode,d.MenuName,a.IsCreate,a.IsRead,a.IsUpdate,a.IsDelete`+
-		` from Permission as a left join App as b on a.AppId=b.Id`+
+	//sql := `select a.Id,a.AppId,b.AppCode,b.AppName,a.RoleId,c.RoleCode,c.RoleName`+
+	//	` ,a.MenuId,d.MenuCode,d.MenuName,a.IsCreate,a.IsRead,a.IsUpdate,a.IsDelete`+
+	//	` from Permission as a left join App as b on a.AppId=b.Id`+
+	//	` left join Role as c on a.RoleId=c.Id`+
+	//	` left join Menu as d on a.MenuId=d.Id where a.AppId=? and a.RoleId=?`
+	sql := `select ifnull(f.Id,0) as Id,a.AppId,b.AppCode,b.AppName,a.RoleId,c.RoleCode,c.RoleName`+
+		` ,d.Id as MenuId,d.MenuCode,d.MenuName,ifnull(f.IsCreate,0) as IsCreate,ifnull(f.IsRead,0) as IsRead`+
+		` ,ifnull(f.IsUpdate,0) as IsUpdate,ifnull(f.IsDelete,0) as IsDelete`+
+		` from AppRole as a`+
+		` left join App as b on a.AppId=b.Id`+
 		` left join Role as c on a.RoleId=c.Id`+
-		` left join Menu as d on a.MenuId=d.Id where a.AppId=? and a.RoleId=?`
-	p.AppId = app_id
-	p.RoleId=role_id
-	err = db.Select(&permissions,sql,p.AppId,p.RoleId)
-	if err != nil {
-		fmt.Println(err)
-		return permissions,err
+		` left join Menu as d on b.Id=d.AppId `+
+		` left join Permission as f on b.Id=f.AppId and c.Id=f.RoleId and d.Id=f.MenuId `+
+		` where a.AppId=? and a.RoleId=?`+
+		` group by b.Id,a.AppId,b.AppCode,b.AppName,a.RoleId,c.RoleCode,c.RoleName`+
+		` ,d.Id,d.MenuCode,d.MenuName,f.IsCreate,f.IsRead,f.IsUpdate,f.IsDelete`
+		p.AppId = app_id
+		p.RoleId=role_id
+		err = db.Select(&permissions,sql,p.AppId,p.RoleId)
+		if err != nil {
+			fmt.Println(err)
+			return permissions,err
+		}
+		fmt.Println("RoleCode = ",p.RoleCode)
+		return permissions,nil
 	}
-	fmt.Println("RoleCode = ",p.RoleCode)
-	return permissions,nil
-}
 
-func (p *Permission) PermissionGetByMenu (db *sqlx.DB, access_token string, app_id int64, role_id int64, menu_id int64)  error {
-	sql := `select a.Id,a.AppId,b.AppCode,b.AppName,a.RoleId,c.RoleCode,c.RoleName`+
-		` ,a.MenuId,d.MenuCode,d.MenuName,a.IsCreate,a.IsRead,a.IsUpdate,a.IsDelete`+
-		` from Permission as a left join App as b on a.AppId=b.Id`+
-		` left join Role as c on a.RoleId=c.Id`+
-		` left join Menu as d on a.MenuId=d.Id where a.AppId=? and a.RoleId=? and a.MenuId=?`
+	func (p *Permission) PermissionGetByMenu (db *sqlx.DB, access_token string, app_id int64, role_id int64, menu_id int64)  error {
+		//sql := `select a.Id,a.AppId,b.AppCode,b.AppName,a.RoleId,c.RoleCode,c.RoleName`+
+		//` ,a.MenuId,d.MenuCode,d.MenuName,a.IsCreate,a.IsRead,a.IsUpdate,a.IsDelete`+
+		//` from Permission as a left join App as b on a.AppId=b.Id`+
+		//` left join Role as c on a.RoleId=c.Id`+
+		//` left join Menu as d on a.MenuId=d.Id where a.AppId=? and a.RoleId=? and a.MenuId=?`
+		sql := `select ifnull(f.Id,0) as Id,a.AppId,b.AppCode,b.AppName,a.RoleId,c.RoleCode,c.RoleName`+
+			` ,d.Id as MenuId,d.MenuCode,d.MenuName,ifnull(f.IsCreate,0) as IsCreate,ifnull(f.IsRead,0) as IsRead`+
+			` ,ifnull(f.IsUpdate,0) as IsUpdate,ifnull(f.IsDelete,0) as IsDelete`+
+			` from AppRole as a`+
+			` left join App as b on a.AppId=b.Id`+
+			` left join Role as c on a.RoleId=c.Id`+
+			` left join Menu as d on b.Id=d.AppId `+
+			` left join Permission as f on b.Id=f.AppId and c.Id=f.RoleId and d.Id=f.MenuId `+
+			` where a.AppId=? and a.RoleId=? and d.Id=?`+
+			` group by b.Id,a.AppId,b.AppCode,b.AppName,a.RoleId,c.RoleCode,c.RoleName`+
+			` ,d.Id,d.MenuCode,d.MenuName,f.IsCreate,f.IsRead,f.IsUpdate,f.IsDelete`
 	p.AppId = app_id
 	p.RoleId=role_id
 	p.MenuId=menu_id

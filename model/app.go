@@ -90,6 +90,14 @@ func (a *App) AppSave(db *sqlx.DB) (app_code string, err error){
 	app_code = a.AppCode
 	id, _ := res.LastInsertId()
 	fmt.Println("Last Insert Id = ",id)
+
+	sql2 := `INSERT AppRole (AppId,RoleId)`+
+		` select a.Id as AppId,b.Id as RoleId`+
+		` from App as a left join Role as b on a.id<>0 where a.Id=?`
+	res2, err := db.Exec(sql2,id)
+	id2, _ := res2.LastInsertId()
+	fmt.Println("sql2 = ",id2,sql2,id)
+
 	return app_code, nil
 }
 
