@@ -13,6 +13,7 @@ type User struct {
 	Password string `json:"password" db:"Password"`
 	Telephone string `json:"telephone" db:"Telephone,omitempty"`
 	SaleId int `json:"sale_id" db:"SaleId"`
+	BranchId int `json:"branch_id" db:"BranchId"`
 	ProfitId int `json:"profit_id" db:"ProfitId"`
 	DepartmentId int `json:"department_id" db:"DepartmentId"`
 	ExpertId int `json:"expert_id" db:"ExpertId"`
@@ -25,7 +26,7 @@ type User struct {
 
 
 func (u *User)UserGetById(db *sqlx.DB, access_token string, user_id int64) error{
-	sql := `select Id,UserCode,UserName,Password,Telephone,ProfitId,DepartmentId,ExpertId,ActiveStatus from User where id =? limit 1`
+	sql := `select Id,UserCode,UserName,Password,Telephone,ProfitId,DepartmentId,ExpertId,ActiveStatus from User where id =? order by id limit 1`
 	u.Id = user_id
 	err := db.Get(u,sql,u.Id)
 	if err != nil {
@@ -61,7 +62,7 @@ func (u *User)UserGetByKeyword(db *sqlx.DB,access_token string, keyword string) 
 
 
 func (u *User)UserGetAll(db *sqlx.DB, access_token string) (users []*User,err error){
-	sql := `select Id,UserCode,UserName,Password,Telephone,ProfitId,DepartmentId,ExpertId,ActiveStatus from User order by usercode`
+	sql := `select Id,UserCode,UserName,Password,Telephone,ProfitId,DepartmentId,ExpertId,ActiveStatus from User order by id`
 	err = db.Select(&users,sql)
 	if err != nil {
 		fmt.Println(err.Error())
