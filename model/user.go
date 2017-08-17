@@ -14,9 +14,17 @@ type User struct {
 	Telephone string `json:"telephone" db:"Telephone,omitempty"`
 	SaleId int `json:"sale_id" db:"SaleId"`
 	BranchId int `json:"branch_id" db:"BranchId"`
-	ProfitId int `json:"profit_id" db:"ProfitId"`
+	BranchCode string `json:"branch_code,omitempty" db:"BranchCode"`
+	BranchName string `json:"branch_name,omitempty" db:"BranchName"`
+	ProfitcenterId int `json:"profitcenter_id" db:"ProfitcenterId"`
+	ProfitcenterCode string `json:"profitcenter_code,omitempty" db:"ProfitcenterCode"`
+	ProfitcenterName string `json:"profitcenter_name,omitempty" db:"ProfitcenterName"`
 	DepartmentId int `json:"department_id" db:"DepartmentId"`
+	DepartmentCode string `json:"department_code,omitempty" db:"DepartmentCode"`
+	DepartmentName string `json:"department_name,omitempty" db:"DepartmentName"`
 	ExpertId int `json:"expert_id" db:"ExpertId"`
+	ExpertCode string `json:"expert_code,omitempty" db:"ExpertCode"`
+	ExpertName string `json:"expert_name,omitempty" db:"ExpertName"`
 	ActiveStatus int `json:"active_status" db:"ActiveStatus"`
 	CreatorId int `json:"creator_id" db:"CreatorId"`
 	CreateDateTime string `json:"create_date_time,omitempty" db:"CreateDateTime"`
@@ -26,7 +34,13 @@ type User struct {
 
 
 func (u *User)UserGetById(db *sqlx.DB, access_token string, user_id int64) error{
-	sql := `select Id,UserCode,UserName,Password,Telephone,ProfitId,DepartmentId,ExpertId,ActiveStatus from User where id =? order by id limit 1`
+	sql := `select a.Id,a.UserCode,a.UserName,a.Password,a.Telephone,a.SaleId`+
+			` ,a.BranchId,d.BranchCode,d.BranchName,a.ProfitcenterId,b.ProfitcenterCode,b.ProfitcenterName`+
+			` ,a.DepartmentId,c.DepartmentCode,c.DepartmentName,a.ExpertId,e.ExpertCode,e.ExpertName,a.ActiveStatus`+
+			` from User as a left join ProfitcenterMaster as b on a.ProfitcenterId=b.Id`+
+			` left join DepartmentMaster as c on a.DepartmentId=c.Id`+
+			` left join BranchMaster as d on a.BranchId=d.Id`+
+			` left join ExpertMaster as e on a.ExpertId=e.Id where a.id =? order by a.id limit 1`
 	u.Id = user_id
 	err := db.Get(u,sql,u.Id)
 	if err != nil {
@@ -38,7 +52,13 @@ func (u *User)UserGetById(db *sqlx.DB, access_token string, user_id int64) error
 }
 
 func (u *User)UserGetByUserCode(db *sqlx.DB, access_token string, user_code string) error{
-	sql := `select Id,UserCode,UserName,Password,Telephone,ProfitId,DepartmentId,ExpertId,ActiveStatus from User where UserCode =? limit 1`
+	sql := `select a.Id,a.UserCode,a.UserName,a.Password,a.Telephone,a.SaleId`+
+		` ,a.BranchId,d.BranchCode,d.BranchName,a.ProfitcenterId,b.ProfitcenterCode,b.ProfitcenterName`+
+		` ,a.DepartmentId,c.DepartmentCode,c.DepartmentName,a.ExpertId,e.ExpertCode,e.ExpertName,a.ActiveStatus`+
+		` from User as a left join ProfitcenterMaster as b on a.ProfitcenterId=b.Id`+
+		` left join DepartmentMaster as c on a.DepartmentId=c.Id`+
+		` left join BranchMaster as d on a.BranchId=d.Id`+
+		` left join ExpertMaster as e on a.ExpertId=e.Id where a.UserCode =? limit 1`
 	fmt.Println(sql)
 	u.UserCode = user_code
 	err := db.Get(u,sql,u.UserCode)
@@ -50,7 +70,13 @@ func (u *User)UserGetByUserCode(db *sqlx.DB, access_token string, user_code stri
 }
 
 func (u *User)UserGetByKeyword(db *sqlx.DB,access_token string, keyword string) (users []*User,err error){
-	sql := `select Id,UserCode,UserName,Password,Telephone,ProfitId,DepartmentId,ExpertId,ActiveStatus from User where UserCode like CONCAT("%",?,"%") or UserName like CONCAT("%",?,"%") order by Id`
+	sql := `select a.Id,a.UserCode,a.UserName,a.Password,a.Telephone,a.SaleId`+
+		` ,a.BranchId,d.BranchCode,d.BranchName,a.ProfitcenterId,b.ProfitcenterCode,b.ProfitcenterName`+
+		` ,a.DepartmentId,c.DepartmentCode,c.DepartmentName,a.ExpertId,e.ExpertCode,e.ExpertName,a.ActiveStatus`+
+		` from User as a left join ProfitcenterMaster as b on a.ProfitcenterId=b.Id`+
+		` left join DepartmentMaster as c on a.DepartmentId=c.Id`+
+		` left join BranchMaster as d on a.BranchId=d.Id`+
+		` left join ExpertMaster as e on a.ExpertId=e.Id where a.UserCode like CONCAT("%",?,"%") or a.UserName like CONCAT("%",?,"%") order by a.Id asc`
 	err = db.Select(&users,sql,keyword,keyword)
 	if err != nil {
 		fmt.Println(err.Error())
@@ -62,7 +88,13 @@ func (u *User)UserGetByKeyword(db *sqlx.DB,access_token string, keyword string) 
 
 
 func (u *User)UserGetAll(db *sqlx.DB, access_token string) (users []*User,err error){
-	sql := `select Id,UserCode,UserName,Password,Telephone,ProfitId,DepartmentId,ExpertId,ActiveStatus from User order by id`
+	sql := `select a.Id,a.UserCode,a.UserName,a.Password,a.Telephone,a.SaleId`+
+			` ,a.BranchId,d.BranchCode,d.BranchName,a.ProfitcenterId,b.ProfitcenterCode,b.ProfitcenterName`+
+			` ,a.DepartmentId,c.DepartmentCode,c.DepartmentName,a.ExpertId,e.ExpertCode,e.ExpertName,a.ActiveStatus`+
+			` from User as a left join ProfitcenterMaster as b on a.ProfitcenterId=b.Id`+
+			` left join DepartmentMaster as c on a.DepartmentId=c.Id`+
+			` left join BranchMaster as d on a.BranchId=d.Id`+
+			` left join ExpertMaster as e on a.ExpertId=e.Id order by a.Id asc`
 	err = db.Select(&users,sql)
 	if err != nil {
 		fmt.Println(err.Error())
@@ -91,13 +123,13 @@ func (u *User)UserSave(db *sqlx.DB) (user_code string, err error){
 
 	fmt.Println("Date = ",u.CreateDateTime)
 
-	sql := `Insert into User(UserCode,UserName,Password,Telephone,ProfitId,DepartmentId,ExpertId,CreatorId,CreateDateTime) Values(?,?,?,?,?,?,?,?,?)`
+	sql := `Insert into User(UserCode,UserName,Password,Telephone,ProfitcenterId,DepartmentId,ExpertId,CreatorId,CreateDateTime) Values(?,?,?,?,?,?,?,?,?)`
 	res, err := db.Exec(sql,
 		u.UserCode,
 		u.UserName,
 		u.Password,
 		u.Telephone,
-		u.ProfitId,
+		u.ProfitcenterId,
 		u.DepartmentId,
 		u.ExpertId,
 		u.CreatorId,
@@ -125,8 +157,8 @@ func (u *User)UserUpdate(db *sqlx.DB)(user_code string, err error){
 	}
 
 	u.EditDateTime = time.Now().String()
-	sql := `update User set UserCode=?,UserName=?,Password=?,Telephone=?,ProfitId=?,DepartmentId=?,ExpertId=?,ActiveStatus=?,EditorId=?,EditDateTime=? where id = ?`
-	res, err := db.Exec(sql,u.UserCode,u.UserName,u.Password,u.Telephone,u.ProfitId,u.DepartmentId,u.ExpertId,u.ActiveStatus,u.EditorId,u.EditDateTime,u.Id)
+	sql := `update User set UserCode=?,UserName=?,Password=?,Telephone=?,ProfitcenterId=?,DepartmentId=?,ExpertId=?,ActiveStatus=?,EditorId=?,EditDateTime=? where id = ?`
+	res, err := db.Exec(sql,u.UserCode,u.UserName,u.Password,u.Telephone,u.ProfitcenterId,u.DepartmentId,u.ExpertId,u.ActiveStatus,u.EditorId,u.EditDateTime,u.Id)
 	if err != nil {
 		fmt.Println(err)
 		return "", err
