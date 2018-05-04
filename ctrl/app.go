@@ -13,15 +13,6 @@ import (
 
 //=======================================================API App========================================================
 
-
-func init(){
-	db, err := ConnectDB("sys")
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-	dbc = db
-}
-
 func AppGetAll(c *gin.Context){
 	log.Println("call GET AppGetAll()")
 	c.Keys = headerKeys

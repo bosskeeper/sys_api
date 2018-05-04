@@ -13,15 +13,6 @@ import (
 
 //=======================================================API Menu========================================================
 
-
-func init(){
-	db, err := ConnectDB("sys")
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-	dbc = db
-}
-
 func MenuGetAll(c *gin.Context){
 	log.Println("call GET MenuGetAll()")
 	c.Keys = headerKeys
