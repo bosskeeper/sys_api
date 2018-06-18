@@ -49,7 +49,7 @@ func (l *Login) LoginGetByUser(db *sqlx.DB, access_token string,user_code string
 	l.AppID = appid
 		err = db.Get(l,sql,l.UserCode,l.Password,l.AppID)
 	log.Println(sql)
-	//fmt.Println("UserID = ",l.Id)
+	fmt.Println("sql = ",sql)
 	if err != nil {
 		log.Println("Error ", err.Error())
 	}
@@ -72,7 +72,7 @@ func (l *Login) LoginGetByUser(db *sqlx.DB, access_token string,user_code string
 	//	" left join Permission as g on c.Id=g.RoleId and d.Id=g.AppId and f.Id=g.MenuId" +
 	//	"  where a.UserName='"+l.UserName+"' and a.Password='"+l.Password+"' and b.AppID="+ strconv.FormatInt(l.AppID, 10)
 
-	fmt.Println(sqlsub)
+	fmt.Println("sqlsub = ", sqlsub)
 		err = db.Select(&l.Menus,sqlsub,l.UserCode,l.Password,l.AppID)
 		//err = db.Select(&l.menus,sqlsub)
 

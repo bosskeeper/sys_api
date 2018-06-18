@@ -12,15 +12,6 @@ import (
 	"strconv"
 )
 
-func init(){
-	db, err := ConnectDB("sys")
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-	dbc = db
-}
-
-
 func RoleSave(c *gin.Context){
 	c.Keys = headerKeys
 	newRole := &model.Role{}

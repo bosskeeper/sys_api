@@ -3,7 +3,6 @@ package ctrl
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/itnopadol/sys_api/model"
-	"github.com/jmoiron/sqlx"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"net/http"
@@ -12,15 +11,15 @@ import (
 	"strconv"
 )
 
-var  dbc *sqlx.DB
-
-func init(){
-	db, err := ConnectDB("sys")
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-	dbc = db
-}
+//var  dbc *sqlx.DB
+//
+//func init(){
+//	db, err := ConnectDB("sys")
+//	if err != nil {
+//		fmt.Println(err.Error())
+//	}
+//	dbc = db
+//}
 
 //=======================================================API User========================================================
 func UserGetById(c *gin.Context){

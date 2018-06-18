@@ -2,7 +2,18 @@ package ctrl
 
 import (
 	"github.com/jmoiron/sqlx"
+	"fmt"
 )
+
+var dbc *sqlx.DB
+
+func init() {
+	db, err := ConnectDB("sys")
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	dbc = db
+}
 
 func ConnectDB(dbName string)(db *sqlx.DB,err error){
 	dsn := "root:[ibdkifu88@tcp(nopadol.net:3306)/"+ dbName +"?parseTime=true&charset=utf8&loc=Local"
@@ -15,6 +26,7 @@ func ConnectDB(dbName string)(db *sqlx.DB,err error){
 }
 
 var headerKeys = make(map[string]interface{})
+
 
 func setHeader(){
 
