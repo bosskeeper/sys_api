@@ -123,7 +123,7 @@ func (u *User)UserSave(db *sqlx.DB) (user_code string, err error){
 
 	fmt.Println("Date = ",u.CreateDateTime)
 
-	sql := `Insert into User(UserCode,UserName,Password,Telephone,ProfitcenterId,DepartmentId,ExpertId,CreatorId,CreateDateTime) Values(?,?,?,?,?,?,?,?,?)`
+	sql := `Insert into User(UserCode,UserName,Password,Telephone,ProfitcenterId,DepartmentId,ExpertId,CreatorId,CreateDateTime) Values(?,?,?,?,?,?,?,?,getdate())`
 	res, err := db.Exec(sql,
 		u.UserCode,
 		u.UserName,
@@ -132,8 +132,7 @@ func (u *User)UserSave(db *sqlx.DB) (user_code string, err error){
 		u.ProfitcenterId,
 		u.DepartmentId,
 		u.ExpertId,
-		u.CreatorId,
-		u.CreateDateTime)
+		u.CreatorId)
 	if err != nil {
 		fmt.Println("Error = ",err.Error())
 		return "", err
@@ -157,8 +156,8 @@ func (u *User)UserUpdate(db *sqlx.DB)(user_code string, err error){
 	}
 
 	u.EditDateTime = time.Now().String()
-	sql := `update User set UserCode=?,UserName=?,Password=?,Telephone=?,ProfitcenterId=?,DepartmentId=?,ExpertId=?,ActiveStatus=?,EditorId=?,EditDateTime=? where id = ?`
-	res, err := db.Exec(sql,u.UserCode,u.UserName,u.Password,u.Telephone,u.ProfitcenterId,u.DepartmentId,u.ExpertId,u.ActiveStatus,u.EditorId,u.EditDateTime,u.Id)
+	sql := `update User set UserCode=?,UserName=?,Password=?,Telephone=?,ProfitcenterId=?,DepartmentId=?,ExpertId=?,ActiveStatus=?,EditorId=?,EditDateTime=getdate() where id = ?`
+	res, err := db.Exec(sql,u.UserCode,u.UserName,u.Password,u.Telephone,u.ProfitcenterId,u.DepartmentId,u.ExpertId,u.ActiveStatus,u.EditorId,u.Id)
 	if err != nil {
 		fmt.Println(err)
 		return "", err
@@ -185,8 +184,8 @@ func (u *User)UserDisable(db *sqlx.DB)(user_code string, err error){
 	}
 
 	u.EditDateTime = time.Now().String()
-	sql := `update User set ActiveStatus=?,EditorId=?,EditDateTime=? where id = ?`
-	res, err := db.Exec(sql,u.ActiveStatus,u.EditorId,u.EditDateTime,u.Id)
+	sql := `update User set UserCode=?,ActiveStatus=?,EditorId=?,EditDateTime=? where id = ?`
+	res, err := db.Exec(sql,u.UserCode,u.ActiveStatus,u.EditorId,u.EditDateTime,u.Id)
 	if err != nil {
 		fmt.Println(err)
 		return "", err
