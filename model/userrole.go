@@ -63,7 +63,7 @@ func (ur *UserRole) UserRoleSave(db *sqlx.DB) (user_id int64, err error){
 	err = ur.GetUserRoleNotExist(db)
 
 	ur.CreateDateTime = time.Now().String()
-	ur.CreatorId = 1
+	//ur.CreatorId = 1
 	sql := `insert into UserRole(AppId,UserId,RoleId,CreatorId,CreateDateTime) values(?,?,?,?,?)`
 	fmt.Println("sql = ",sql)
 	res, err := db.Exec(sql,ur.AppId,ur.UserId,ur.RoleId,ur.CreatorId,ur.CreateDateTime)
@@ -82,7 +82,7 @@ func (ur *UserRole) UserRoleUpdate(db *sqlx.DB)(user_id int64, err error){
 	err = ur.GetUserRoleNotExist(db)
 
 	ur.EditDateTime = time.Now().String()
-	ur.EditorId = 3
+	//ur.EditorId = 3
 	sql := `update UserRole set RoleId=?,EditorId=?,EditDateTime=? where id = ?`
 	res, err := db.Exec(sql,ur.RoleId,ur.EditorId,ur.EditDateTime,ur.Id)
 	if err != nil {

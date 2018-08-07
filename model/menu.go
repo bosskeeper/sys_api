@@ -103,6 +103,7 @@ func (m *Menu) MenuSave(db *sqlx.DB) (menu_code string, err error){
 
 func (m *Menu)MenuUpdate(db *sqlx.DB)(menu_code string, err error){
 	m.EditDateTime = time.Now().String()
+	m.ActiveStatus = 1
 	sql := `update Menu set MenuCode=?,MenuName=?,AppId=?,Description=?,ActiveStatus=?,EditorId=?,EditDateTime=? where Id=? `
 	//sql2 := `update Menu set MenuCode=?,MenuName=?,AppId=?,Description=?,ActiveStatus=?,EditorId=?,EditDateTime=? where Id=? `
 	res, err := db.Exec(sql,m.MenuCode,m.MenuName,m.AppId,m.Description,m.ActiveStatus,m.EditorId,m.EditDateTime,m.Id)
@@ -128,8 +129,8 @@ func (m *Menu)MenuUpdate(db *sqlx.DB)(menu_code string, err error){
 
 func (m *Menu)MenuDisable(db *sqlx.DB)(menu_code string, err error){
 	m.EditDateTime = time.Now().String()
-	sql := `update Menu set ActiveStatus=?,EditorId=?,EditDateTime=? where Id=? `
-	res, err := db.Exec(sql,m.ActiveStatus,m.EditorId,m.EditDateTime,m.Id)
+	sql := `update Menu set MenuCode=?,MenuName=?,ActiveStatus=?,EditorId=?,EditDateTime=? where Id=? `
+	res, err := db.Exec(sql,m.MenuCode,m.MenuName,m.ActiveStatus,m.EditorId,m.EditDateTime,m.Id)
 	if err != nil {
 		fmt.Println(err)
 		return "", err
