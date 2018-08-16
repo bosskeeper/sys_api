@@ -2,3 +2,6 @@
 *.exe
 
 sys_api.exe
+
+# directory
+pictures/
