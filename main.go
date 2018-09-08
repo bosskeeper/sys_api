@@ -55,6 +55,11 @@ func main(){
 	r.POST("/permission",ctrl.PermissionSave)
 	r.PUT("/permission",ctrl.PermissionUpdate)
 
+	r.GET("/branchs",ctrl.GetBranchs)
+	r.GET("/departments",ctrl.GetDepartments)
+	r.GET("/experts",ctrl.GetExperts)
+	r.GET("/profitcenters",ctrl.GetProfitcenters)
+
 	r.Run(":9000")
 
 }
