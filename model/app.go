@@ -66,6 +66,24 @@ func (a *App) AppGetByRole(db *sqlx.DB, access_token string, app_id int64) (apps
 	return apps, nil
 }
 
+/*
+func (a *App) AppGetByRole(db *sqlx.DB, access_token string, app_id int64) (apps []*App, err error){
+	sql := `select a.Id,a.AppCode,a.AppName,b.RoleId,c.RoleCode,c.RoleName`+
+	       	` from App as a left join AppRole as b on a.Id=b.AppId`+
+		` left join Role as c on b.RoleId=c.Id`+
+		` where a.Id = ? order by Id`
+	err = db.Select(&apps,sql,app_id)
+	fmt.Println("sql = ",sql)
+	if err != nil {
+		return nil, err
+	}
+	return apps, nil
+}
+*/
+
+
+
+
 func (a *App) AppGetByAppCode(db *sqlx.DB, access_token string, app_code string) error{
 	sql := `select Id,AppCode,AppName,ifnull(Description,'') as Description,ActiveStatus from App where AppCode = ? order by Id limit 1`
 	a.AppCode = app_code

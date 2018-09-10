@@ -13,6 +13,7 @@ type User struct {
 	Password string `json:"password" db:"Password"`
 	Telephone string `json:"telephone" db:"Telephone,omitempty"`
 	SaleId int `json:"sale_id" db:"SaleId"`
+	SaleCode string `json:"sale_code" db:"SaleCode"`
 	BranchId int `json:"branch_id" db:"BranchId"`
 	BranchCode string `json:"branch_code,omitempty" db:"BranchCode"`
 	BranchName string `json:"branch_name,omitempty" db:"BranchName"`
@@ -34,7 +35,7 @@ type User struct {
 
 
 func (u *User)UserGetById(db *sqlx.DB, access_token string, user_id int64) error{
-	sql := `select a.Id,a.UserCode,a.UserName,a.Password,a.Telephone,a.SaleId`+
+	sql := `select a.Id,a.UserCode,a.UserName,a.Password,a.Telephone,a.SaleId,a.SaleCode`+
 			` ,a.BranchId,d.BranchCode,d.BranchName,a.ProfitcenterId,b.ProfitcenterCode,b.ProfitcenterName`+
 			` ,a.DepartmentId,c.DepartmentCode,c.DepartmentName,a.ExpertId,e.ExpertCode,e.ExpertName,a.ActiveStatus`+
 			` from User as a left join ProfitcenterMaster as b on a.ProfitcenterId=b.Id`+
@@ -52,7 +53,7 @@ func (u *User)UserGetById(db *sqlx.DB, access_token string, user_id int64) error
 }
 
 func (u *User)UserGetByUserCode(db *sqlx.DB, access_token string, user_code string) error{
-	sql := `select a.Id,a.UserCode,a.UserName,a.Password,a.Telephone,a.SaleId`+
+	sql := `select a.Id,a.UserCode,a.UserName,a.Password,a.Telephone,a.SaleId,a.SaleCode`+
 		` ,a.BranchId,d.BranchCode,d.BranchName,a.ProfitcenterId,b.ProfitcenterCode,b.ProfitcenterName`+
 		` ,a.DepartmentId,c.DepartmentCode,c.DepartmentName,a.ExpertId,e.ExpertCode,e.ExpertName,a.ActiveStatus`+
 		` from User as a left join ProfitcenterMaster as b on a.ProfitcenterId=b.Id`+
@@ -70,7 +71,7 @@ func (u *User)UserGetByUserCode(db *sqlx.DB, access_token string, user_code stri
 }
 
 func (u *User)UserGetByKeyword(db *sqlx.DB,access_token string, keyword string) (users []*User,err error){
-	sql := `select a.Id,a.UserCode,a.UserName,a.Password,a.Telephone,a.SaleId`+
+	sql := `select a.Id,a.UserCode,a.UserName,a.Password,a.Telephone,a.SaleId,a.SaleCode`+
 		` ,a.BranchId,d.BranchCode,d.BranchName,a.ProfitcenterId,b.ProfitcenterCode,b.ProfitcenterName`+
 		` ,a.DepartmentId,c.DepartmentCode,c.DepartmentName,a.ExpertId,e.ExpertCode,e.ExpertName,a.ActiveStatus`+
 		` from User as a left join ProfitcenterMaster as b on a.ProfitcenterId=b.Id`+
@@ -88,7 +89,7 @@ func (u *User)UserGetByKeyword(db *sqlx.DB,access_token string, keyword string) 
 
 
 func (u *User)UserGetAll(db *sqlx.DB, access_token string) (users []*User,err error){
-	sql := `select a.Id,a.UserCode,a.UserName,a.Password,a.Telephone,a.SaleId`+
+	sql := `select a.Id,a.UserCode,a.UserName,a.Password,a.Telephone,a.SaleId,a.SaleCode`+
 			` ,a.BranchId,d.BranchCode,d.BranchName,a.ProfitcenterId,b.ProfitcenterCode,b.ProfitcenterName`+
 			` ,a.DepartmentId,c.DepartmentCode,c.DepartmentName,a.ExpertId,e.ExpertCode,e.ExpertName,a.ActiveStatus`+
 			` from User as a left join ProfitcenterMaster as b on a.ProfitcenterId=b.Id`+
@@ -123,13 +124,15 @@ func (u *User)UserSave(db *sqlx.DB) (user_code string, err error){
 
 	fmt.Println("Date = ",u.CreateDateTime)
 
-	sql := `Insert into User(UserCode,UserName,Password,Telephone,SaleId,ProfitcenterId,DepartmentId,ExpertId,CreatorId,CreateDateTime) Values(?,?,?,?,?,?,?,?,?,?)`
+	sql := `Insert into User(UserCode,UserName,Password,Telephone,SaleId,SaleCode,BranchId,ProfitcenterId,DepartmentId,ExpertId,CreatorId,CreateDateTime) Values(?,?,?,?,?,?,?,?,?,?,?,?)`
 	res, err := db.Exec(sql,
 		u.UserCode,
 		u.UserName,
 		u.Password,
 		u.Telephone,
 		u.SaleId,
+		u.SaleCode,
+		u.BranchId,
 		u.ProfitcenterId,
 		u.DepartmentId,
 		u.ExpertId,
@@ -158,7 +161,7 @@ func (u *User)UserUpdate(db *sqlx.DB)(user_code string, err error){
 	}
 
 	u.EditDateTime = time.Now().String()
-	sql := `update User set UserCode=?,UserName=?,Password=?,Telephone=?,ProfitcenterId=?,DepartmentId=?,ExpertId=?,ActiveStatus=?,EditorId=?,EditDateTime=? where id = ?`
+	sql := `update User set UserCode=?,UserName=?,Password=?,Telephone=?,BranchId=?,ProfitcenterId=?,DepartmentId=?,ExpertId=?,ActiveStatus=?,EditorId=?,EditDateTime=? where id = ?`
 	res, err := db.Exec(sql,u.UserCode,u.UserName,u.Password,u.Telephone,u.ProfitcenterId,u.DepartmentId,u.ExpertId,u.ActiveStatus,u.EditorId,u.EditDateTime,u.Id)
 	if err != nil {
 		fmt.Println(err)
