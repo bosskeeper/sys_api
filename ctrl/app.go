@@ -209,3 +209,26 @@ func AppDisable(c *gin.Context){
 	}
 
 }
+
+func AppRoleSave(c *gin.Context){
+	log.Println("call POST AppRoleSave()")
+	c.Keys = headerKeys
+
+	newAppRole := &model.AppRole{}
+	err := c.BindJSON(newAppRole)
+	if err != nil {
+		fmt.Println(err)
+	}
+	ar, _ := newAppRole.AppRoleSave(dbc)
+
+	rs := api.Response{}
+	if err != nil {
+		rs.Status = "error"
+		rs.Message = "No Content = "+err.Error()
+		c.JSON(http.StatusNotFound,rs)
+	}else{
+		rs.Status = "success"
+		rs.Data = ar
+		c.JSON(http.StatusOK,rs)
+	}
+}

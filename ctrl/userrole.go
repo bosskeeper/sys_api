@@ -16,11 +16,11 @@ func UserRoleGetAll(c *gin.Context){
 	c.Keys = headerKeys
 
 	access_token := c.Request.URL.Query().Get("access_token")
-	app_id := c.Request.URL.Query().Get("app_id")
+	user_id := c.Request.URL.Query().Get("user_id")
 
 	ur := new(model.UserRole)
-	ur.AppId, _ = strconv.ParseInt(app_id,10,64)
-	userroles,err := ur.UserRoleGetAll(dbc,access_token,ur.AppId)
+	ur.UserId, _ = strconv.ParseInt(user_id,10,64)
+	userroles,err := ur.UserRoleGetAll(dbc,access_token,ur.UserId)
 	if err != nil {
 		fmt.Println(err)
 	}

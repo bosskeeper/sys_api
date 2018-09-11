@@ -22,6 +22,16 @@ type App struct {
 	EditDateTime string `json:"edit_date_time,omitempty" db:"EditDateTime"`
 }
 
+type AppRole struct {
+	Id int64 `json:"id" db:"Id"`
+	AppId int64 `json:"app_id" db:"AppId"`
+	RoleId int64 `json:"role_id" db:"RoleId"`
+	CreatorId int64 `json:"creator_id" db:"CreatorId"`
+	CreateDateTime string `json:"create_date_time,omitempty" db:"CreateDateTime"`
+	EditorId int64 `json:"editor_id" db:"EditorId"`
+	EditDateTime string `json:"edit_date_time,omitempty" db:"EditDateTime"`
+}
+
 
 func (a *App) AppGetAll(db *sqlx.DB) (apps []*App, err error) {
 	sql := `select Id,AppCode,AppName,ifnull(Description,'') as Description,ActiveStatus from App  order by Id `
@@ -81,9 +91,6 @@ func (a *App) AppGetByRole(db *sqlx.DB, access_token string, app_id int64) (apps
 }
 */
 
-
-
-
 func (a *App) AppGetByAppCode(db *sqlx.DB, access_token string, app_code string) error{
 	sql := `select Id,AppCode,AppName,ifnull(Description,'') as Description,ActiveStatus from App where AppCode = ? order by Id limit 1`
 	a.AppCode = app_code
@@ -109,16 +116,46 @@ func (a *App) AppSave(db *sqlx.DB) (app_code string, err error){
 	id, _ := res.LastInsertId()
 	fmt.Println("Last Insert Id = ",id)
 
-	sql2 := `INSERT AppRole (AppId,RoleId)`+
-		` select a.Id as AppId,b.Id as RoleId`+
-		` from App as a left join Role as b on a.id<>0 where a.Id=?`
-	res2, err := db.Exec(sql2,id)
-	id2, _ := res2.LastInsertId()
-	fmt.Println("sql2 = ",id2,sql2,id)
+	//sql2 := `INSERT AppRole (AppId,RoleId)`+
+	//	` select a.Id as AppId,b.Id as RoleId`+
+	//	` from App as a left join Role as b on a.id<>0 where a.Id=?`
+	//res2, err := db.Exec(sql2,id)
+	//id2, _ := res2.LastInsertId()
+	//fmt.Println("sql2 = ",id2,sql2,id)
 
 	return app_code, nil
 }
 
+
+func (ar *AppRole) AppRoleSave(db *sqlx.DB) (app_id int64, err error){
+	ar.CreateDateTime = time.Now().String()
+	sql := `insert into AppRole(AppId,RoleId,CreatorId,CreateDateTime,EditorId,EditDateTime) values(?,?,?,?,?,?)`
+	res, err := db.Exec(sql,ar.AppId,ar.RoleId,ar.CreatorId,ar.CreateDateTime,ar.CreatorId,ar.CreateDateTime)
+	if err != nil {
+		fmt.Println(err)
+		return 0,err
+	}
+	app_id = ar.AppId
+	id, _ := res.LastInsertId()
+	fmt.Println("Last Insert Id = ",id)
+	//delete ก่อน 
+	sql2 := `delete from Permission where AppId=? and RoleId=?`
+	res2, err := db.Exec(sql2,ar.AppId,ar.RoleId)
+	app_id = ar.AppId
+	id2, _ := res2.LastInsertId()
+	fmt.Println("Last Delete Id = ",id2)
+
+	//Insert Permission 
+	sql3 := `INSERT Permission (AppId, RoleId,MenuId,IsCreate,IsRead,IsUpdate,IsDelete,CreatorId,CreateDateTime,EditorId,EditDateTime)
+				SELECT AppId, ? as RoleId,Id as MenuId,0 as IsCreate,0 as IsRead,0 as IsUpdate,0 as IsDelete,? as CreatorId,now() CreateDateTime,? as EditorId,now() EditDateTime
+			 FROM Menu where AppId=?`
+	res3, err := db.Exec(sql3,ar.RoleId,ar.CreatorId,ar.CreatorId,ar.AppId)
+	app_id = ar.AppId
+	id3, _ := res3.LastInsertId()
+	fmt.Println("Last Insert Id = ",id3)
+
+	return app_id, nil
+}
 
 func (a *App)AppUpdate(db *sqlx.DB)(app_code string, err error){
 	a.EditDateTime = time.Now().String()

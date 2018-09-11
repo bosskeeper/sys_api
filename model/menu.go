@@ -76,10 +76,11 @@ func (m *Menu) MenuGetByAppId(db *sqlx.DB, access_token string, app_id int64) (m
 
 func (m *Menu) MenuSave(db *sqlx.DB) (menu_code string, err error){
 	m.CreateDateTime = time.Now().String()
+	m.EditDateTime = time.Now().String()
 	m.ActiveStatus = 1
-	sql := `insert into Menu(MenuCode,MenuName,AppId,Description,ActiveStatus,CreatorId,CreateDateTime) values(?,?,?,?,?,?,?)`
+	sql := `insert into Menu(MenuCode,MenuName,AppId,Description,ActiveStatus,CreatorId,CreateDateTime,EditorId,EditDateTime) values(?,?,?,?,?,?,?,?,?)`
 
-	res, err := db.Exec(sql,m.MenuCode,m.MenuName,m.AppId,m.Description,m.ActiveStatus,m.CreatorId,m.CreateDateTime)
+	res, err := db.Exec(sql,m.MenuCode,m.MenuName,m.AppId,m.Description,m.ActiveStatus,m.CreatorId,m.CreateDateTime,m.EditorId,m.EditDateTime)
 
 	if err != nil {
 		fmt.Println(err)
@@ -91,12 +92,14 @@ func (m *Menu) MenuSave(db *sqlx.DB) (menu_code string, err error){
 
 	fmt.Println("Last Insert Id = ",id)
 
-	//sql2 := `INSERT Permission (AppId,RoleId,MenuId,IsCreate,IsRead,IsUpdate,IsDelete,CreatorId,CreateDateTime)`+
-	//	` select a.AppId,b.RoleId,a.id as MenuId,0 as IsCreate,0 as IsRead,0 as IsUpdate,0 as IsDelete,? as CreatorId,? as CreateDateTime`+
-	//	` from Menu as a left join AppRole as b on a.AppId=b.AppId where a.Id=?`
-	//res2, err := db.Exec(sql2,m.CreatorId,m.CreateDateTime,id)
-	//id2, _ := res2.LastInsertId()
-	//fmt.Println("sql2 = ",id2,sql2,m.CreatorId,m.CreateDateTime,id)
+	sql2 := `INSERT Permission (AppId, RoleId,MenuId,IsCreate,IsRead,IsUpdate,IsDelete,CreatorId,CreateDateTime,EditorId,EditDateTime)
+		
+			SELECT AppId, RoleId,? as MenuId,0 as IsCreate,0 as IsRead,0 as IsUpdate,0 as IsDelete,? as CreatorId,now() CreateDateTime,? as EditorId,now() EditDateTime FROM AppRole where AppId=? `
+
+	res2, err := db.Exec(sql2,id,m.CreatorId,m.EditorId,m.AppId)
+	id2, _ := res2.LastInsertId()
+	fmt.Println("sql2 = ",id2)
+
 	return menu_code, nil
 }
 

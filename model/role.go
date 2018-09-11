@@ -64,12 +64,12 @@ func (r *Role) RoleSave(db *sqlx.DB) (role_code string, err error){
 	id, _ := res.LastInsertId()
 	fmt.Println("Last Insert Id = ",id)
 
-	sql2 := `INSERT AppRole (AppId,RoleId)`+
-		` select b.Id as AppId,a.Id as RoleId`+
-		` from Role as a left join App as b on a.id<>0 where a.Id=?`
-	res2, err := db.Exec(sql2,id)
-	id2, _ := res2.LastInsertId()
-	fmt.Println("sql2 = ",id2,sql2,id)
+	//sql2 := `INSERT AppRole (AppId,RoleId)`+
+	//	` select b.Id as AppId,a.Id as RoleId`+
+	//	` from Role as a left join App as b on a.id<>0 where a.Id=?`
+	//res2, err := db.Exec(sql2,id)
+	//id2, _ := res2.LastInsertId()
+	//fmt.Println("sql2 = ",id2,sql2,id)
 
 	return role_code, nil
 }
