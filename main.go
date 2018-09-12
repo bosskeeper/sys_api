@@ -54,7 +54,7 @@ func main(){
 	r.GET("/permissions",ctrl.PermissionGetAll)
 	r.GET("/permission",ctrl.PermissionGetByMenu)
 	r.POST("/permission",ctrl.PermissionSave)
-	r.PUT("/permission",ctrl.PermissionUpdate)
+	r.PUT("/permission",ctrl.PermissionUpdateAll)
 
 	r.GET("/branchs",ctrl.GetBranchs)
 	r.GET("/departments",ctrl.GetDepartments)

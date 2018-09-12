@@ -101,8 +101,6 @@ func PermissionSave(c *gin.Context){
 		fmt.Println("Binding Json Error Step ",err)
 	}
 
-
-
 	x.PermissionSaveAll(dbc)
 
 	rs := api.Response{}
@@ -119,11 +117,13 @@ func PermissionSave(c *gin.Context){
 	}
 }
 
+/*
 func PermissionUpdate(c *gin.Context){
 	c.Keys = headerKeys
 	newPermission := &model.Permission{}
 
 	err := c.BindJSON(newPermission)
+	fmt.Println("xx",newPermission)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -149,5 +149,37 @@ func PermissionUpdate(c *gin.Context){
 			rs.Data = ur
 			c.JSON(http.StatusOK,rs)
 		}
+	}
+}
+*/
+
+func PermissionUpdateAll(c *gin.Context){
+	log.Println("call Put PermissionUpdate")
+	c.Keys = headerKeys
+
+	//p := model.Permission{}
+	//data := []model.Permission{}
+	//data := Permissions{}
+	x := model.Permissions{}
+	err := c.BindJSON(&x)
+	//fmt.Println(x)
+
+	if err != nil {
+		fmt.Println("Binding Json Error Step ",err)
+	}
+
+	x.PermissionUpdateAll(dbc)
+
+	rs := api.Response{}
+	if err != nil {
+		rs.Status = "error"
+		rs.Message = "No Content = "+err.Error()
+		c.JSON(http.StatusNotFound,rs)
+	}else{
+
+			rs.Status = "success"
+			//rs.Data = x
+			c.JSON(http.StatusOK,rs)
+
 	}
 }

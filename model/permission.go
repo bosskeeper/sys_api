@@ -110,26 +110,26 @@ func (p *Permission) PermissionSave(db *sqlx.DB) (permission_id int64, err error
 	return id, nil
 }
 
-func (p *Permission) PermissionUpdate(db *sqlx.DB)(permission_id int64, err error){
+func (p *Permission) PermissionUpdate(db *sqlx.DB) error{
 	fmt.Println("Permission = ",p.Id)
-	err = p.GetPermissionNotExist(db)
+	//err = p.GetPermissionNotExist(db)
 
 	p.EditDateTime = time.Now().String()
 	p.EditorId = 1
 	sql := `update Permission set IsCreate=?,IsRead=?,IsUpdate=?,IsDelete=?,EditorId=?,EditDateTime=? where id = ?`
 	res, err := db.Exec(sql,p.IsCreate,p.IsRead,p.IsUpdate,p.IsDelete,p.EditorId,p.EditDateTime,p.Id)
 	if err != nil {
-		fmt.Println(err)
-		return 0, err
+		fmt.Println("err2",err)
+		return  err
 	}
-	permission_id = p.Id
+	//permission_id = p.Id
 	update, err :=res.RowsAffected()
 	if err != nil {
-		fmt.Println(err)
-		return 0, err
+		fmt.Println("err3",err)
+		return  err
 	}
 	fmt.Println("status",update)
-	return update, nil
+	return  nil
 }
 
 func (p *Permission) GetPermissionNotExist(db *sqlx.DB) error {
@@ -158,11 +158,27 @@ func (ps *Permissions)PermissionSaveAll(db *sqlx.DB) error{
 			if err != nil{
 				return err
 			}
-
 	}
-
 	return nil
 }
+
+
+func (ps *Permissions)PermissionUpdateAll(db *sqlx.DB) error{
+	for _, k := range  ps.Data{
+
+			// todo : check exists permission
+			// if exists
+			// todo : update
+			// todo : delete old permission  appid,roleid,menuid
+			//todo : insert
+			err := k.PermissionUpdate(db)
+			if err != nil{
+				return err
+			}
+	}
+	return nil
+}
+
 
 
 func (p *Permission)PermissionDelete(db *sqlx.DB) error{
