@@ -23,7 +23,7 @@ import (
 
 //=======================================================API User========================================================
 func UserGetById(c *gin.Context){
-	
+
 	log.Println("call GET UserGetByCode()")
 	c.Keys = headerKeys
 
@@ -159,7 +159,6 @@ func UserUpdate(c *gin.Context){
 	}
 
 }
-
 
 func UserDisable(c *gin.Context){
 	log.Println("call PUT UserUpdate()")

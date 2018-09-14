@@ -104,8 +104,6 @@ func (u *User)UserGetAll(db *sqlx.DB, access_token string) (users []*User,err er
 
 	return users, nil
 }
-
-
 type dateStruct struct {
 	time.Time
 }
@@ -152,7 +150,8 @@ func (u *User)UserSave(db *sqlx.DB) (user_code string, err error){
 
 
 func (u *User)UserUpdate(db *sqlx.DB)(user_code string, err error){
-	fmt.Println("UserCode = ",u.Id)
+
+	fmt.Println("UserID = ",u.Id)
 	err = u.GetUserNotExist(db)
 	fmt.Println("check nil =",err)
 	if err != nil {
@@ -162,7 +161,7 @@ func (u *User)UserUpdate(db *sqlx.DB)(user_code string, err error){
 
 	u.EditDateTime = time.Now().String()
 	sql := `update User set UserCode=?,UserName=?,Password=?,Telephone=?,BranchId=?,ProfitcenterId=?,DepartmentId=?,ExpertId=?,ActiveStatus=?,EditorId=?,EditDateTime=? where id = ?`
-	res, err := db.Exec(sql,u.UserCode,u.UserName,u.Password,u.Telephone,u.ProfitcenterId,u.DepartmentId,u.ExpertId,u.ActiveStatus,u.EditorId,u.EditDateTime,u.Id)
+	res, err := db.Exec(sql,u.UserCode,u.UserName,u.Password,u.Telephone,u.BranchId,u.ProfitcenterId,u.DepartmentId,u.ExpertId,u.ActiveStatus,u.EditorId,u.EditDateTime,u.Id)
 	if err != nil {
 		fmt.Println(err)
 		return "", err
