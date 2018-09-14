@@ -12,6 +12,7 @@ import (
 )
 
 func UserRoleGetAll(c *gin.Context){
+
 	log.Println("call GET UserRoleAll")
 	c.Keys = headerKeys
 
@@ -24,24 +25,27 @@ func UserRoleGetAll(c *gin.Context){
 	if err != nil {
 		fmt.Println(err)
 	}
+	fmt.Println("UserCode = ",user_id)
+
 	rs := api.Response{}
 	if err != nil {
 		rs.Status = "error"
 		rs.Message = "No Content ="+err.Error()
 		c.JSON(http.StatusNotFound,rs)
-	}else{
-		if userroles==nil{
-			//fmt.Println("Yes")
-			rs.Status = "error"
-			rs.Message = "No Content: NotData"
-			c.JSON(http.StatusNotFound, rs)
-		}else {
-			rs.Status = "success"
-			rs.Data = userroles
-			c.JSON(http.StatusOK,rs)
-		}
-	}
+	} else {
+		rs.Status = "success"
+		rs.Data = userroles
+		c.JSON(http.StatusOK,rs)
 }
+}
+	//else{
+	//	if userroles==nil{
+	//		//fmt.Println("Yes")
+	//		rs.Status = "error"
+	//		rs.Message = "No Content: NotData"
+	//		c.JSON(http.StatusNotFound, rs)
+	//	}
+
 
 func UserRoleGetUser(c *gin.Context){
 	log.Println("call GET UserRoleByUser")
@@ -72,8 +76,8 @@ func UserRoleGetUser(c *gin.Context){
 			rs.Message = "No Content: NotData"
 			c.JSON(http.StatusNotFound, rs)
 		}else {
-			rs.Status = "success"
-			rs.Data = ur
+			//rs.Status = "success"
+			//rs.Data = ur
 			c.JSON(http.StatusOK,rs)
 		}
 	}

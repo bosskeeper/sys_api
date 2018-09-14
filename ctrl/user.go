@@ -23,6 +23,7 @@ import (
 
 //=======================================================API User========================================================
 func UserGetById(c *gin.Context){
+	
 	log.Println("call GET UserGetByCode()")
 	c.Keys = headerKeys
 
