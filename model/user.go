@@ -8,28 +8,28 @@ import (
 
 type User struct {
 	Id int64 `json:"id" db:"Id"`
-	UserCode string `json:"user_code" db:"UserCode"`
-	UserName string `json:"user_name" db:"UserName"`
-	Password string `json:"password" db:"Password"`
-	Telephone string `json:"telephone" db:"Telephone,omitempty"`
-	SaleId int `json:"sale_id" db:"SaleId"`
-	SaleCode string `json:"sale_code" db:"SaleCode"`
-	BranchId int `json:"branch_id" db:"BranchId"`
+	UserCode string `json:"user_code,omitempty" db:"UserCode"`
+	UserName string `json:"user_name,omitempty" db:"UserName"`
+	Password string `json:"password,omitempty" db:"Password"`
+	Telephone string `json:"telephone,omitempty" db:"Telephone,omitempty"`
+	SaleId int `json:"sale_id,omitempty" db:"SaleId"`
+	SaleCode string `json:"sale_code,omitempty" db:"SaleCode"`
+	BranchId int `json:"branch_id,omitempty" db:"BranchId"`
 	BranchCode string `json:"branch_code,omitempty" db:"BranchCode"`
 	BranchName string `json:"branch_name,omitempty" db:"BranchName"`
-	ProfitcenterId int `json:"profitcenter_id" db:"ProfitcenterId"`
+	ProfitcenterId int `json:"profitcenter_id,omitempty" db:"ProfitcenterId"`
 	ProfitcenterCode string `json:"profitcenter_code,omitempty" db:"ProfitcenterCode"`
 	ProfitcenterName string `json:"profitcenter_name,omitempty" db:"ProfitcenterName"`
-	DepartmentId int `json:"department_id" db:"DepartmentId"`
+	DepartmentId int `json:"department_id,omitempty" db:"DepartmentId"`
 	DepartmentCode string `json:"department_code,omitempty" db:"DepartmentCode"`
 	DepartmentName string `json:"department_name,omitempty" db:"DepartmentName"`
-	ExpertId int `json:"expert_id" db:"ExpertId"`
+	ExpertId int `json:"expert_id,omitempty" db:"ExpertId"`
 	ExpertCode string `json:"expert_code,omitempty" db:"ExpertCode"`
 	ExpertName string `json:"expert_name,omitempty" db:"ExpertName"`
-	ActiveStatus int `json:"active_status" db:"ActiveStatus"`
-	CreatorId int `json:"creator_id" db:"CreatorId"`
+	ActiveStatus int `json:"active_status,omitempty" db:"ActiveStatus"`
+	CreatorId int `json:"creator_id,omitempty" db:"CreatorId"`
 	CreateDateTime string `json:"create_date_time,omitempty" db:"CreateDateTime"`
-	EditorId int `json:"editor_id" db:"EditorId"`
+	EditorId int `json:"editor_id,omitempty" db:"EditorId"`
 	EditDateTime string `json:"edit_date_time,omitempty" db:"EditDateTime"`
 }
 

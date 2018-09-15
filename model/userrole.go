@@ -10,25 +10,26 @@ import (
 
 type UserRole struct {
 	Id       		int64 `json:"id" db:"Id"`
-	AppId       	int64 `json:"app_id" db:"AppId"`
-	AppCode 		string `json:"app_code" db:"AppCode"`
-	AppName 		string `json:"app_name" db:"AppName"`
-	UserId      	int64 `json:"user_id" db:"UserId"`
-	UserCode 		string `json:"user_code" db:"UserCode"`
-	UserName 		string `json:"user_name" db:"UserName"`
-	Salecode		string `json:"sale_code" db:"Salecode"`
-	RoleId       	int64 `json:"role_id" db:"RoleId"`
-	RoleCode 		string `json:"role_code" db:"RoleCode"`
-	RoleName 		string `json:"role_name" db:"RoleName"`
-	CreatorId 		int `json:"creator_id" db:"CreatorId"`
+	AppId       	int64 `json:"app_id,omitempty" db:"AppId"`
+	AppCode 		string `json:"app_code,omitempty" db:"AppCode"`
+	AppName 		string `json:"app_name,omitempty" db:"AppName"`
+	UserId      	int64 `json:"user_id,omitempty" db:"UserId"`
+	UserCode 		string `json:"user_code,omitempty" db:"UserCode"`
+	UserName 		string `json:"user_name,omitempty" db:"UserName"`
+	Salecode		string `json:"sale_code,omitempty" db:"Salecode"`
+	RoleId       	int64 `json:"role_id,omitempty" db:"RoleId"`
+	RoleCode 		string `json:"role_code,omitempty" db:"RoleCode"`
+	RoleName 		string `json:"role_name,omitempty" db:"RoleName"`
+	CreatorId 		int `json:"creator_id,omitempty" db:"CreatorId"`
 	CreateDateTime 	string `json:"create_date_time,omitempty" db:"CreateDateTime"`
-	EditorId 		int `json:"editor_id" db:"EditorId"`
+	EditorId 		int `json:"editor_id,omitempty" db:"EditorId"`
 	EditDateTime 	string `json:"edit_date_time,omitempty" db:"EditDateTime"`
 }
 
 func (ur *UserRole)UserRoleGetAll(db *sqlx.DB, access_token string, user_id int64) (userroles []*UserRole,err error){
 	sql := `select a.Id,a.AppId,b.AppCode,b.AppName,a.UserId,c.Salecode,c.UserCode,c.UserName`+
-		` ,a.RoleId,d.RoleCode,d.RoleName,a.CreatorId,a.CreateDateTime,a.EditorId,a.EditDateTime from UserRole as a`+
+		` ,a.RoleId,COALESCE(d.RoleCode,'') as RoleCode,COALESCE(d.RoleName,'') as RoleName`+
+		` ,a.CreatorId,a.CreateDateTime,a.EditorId,a.EditDateTime from UserRole as a`+
 		` left join App as b on a.AppId=b.Id`+
 		` left join User as c on a.UserId=c.Id`+
 		` left join Role as d on a.RoleId=d.Id where a.UserId=?`
