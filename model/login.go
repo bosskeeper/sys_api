@@ -63,7 +63,7 @@ func (l *Login) LoginGetByUser(db *sqlx.DB, access_token string,user_code string
 	l.UserCode = user_code
 	l.Password = password
 	l.AppID = appid
-		err = dbl.Get(l,sql,l.UserCode,l.Password,l.AppID)
+	err = dbl.Get(l,sql,user_code,password,appid)
 	log.Println(sql)
 	fmt.Println("sql = ",sql)
 	if err != nil {
