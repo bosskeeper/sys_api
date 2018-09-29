@@ -36,8 +36,24 @@ type LoginSub struct {
 	IsDelete  int64 `json:"is_delete" db:"IsDelete"`
 }
 
+var dbl *sqlx.DB
+
+func ConnectDB(dbName string)(db *sqlx.DB,err error){
+	dsn := "root:[ibdkifu88@tcp(nopadol.net:3306)/"+ dbName +"?parseTime=true&charset=utf8&loc=Local"
+	db, err = sqlx.Connect("mysql",dsn)
+	if err != nil {
+		return  nil, err
+	}
+
+	return db, err
+}
+
 
 func (l *Login) LoginGetByUser(db *sqlx.DB, access_token string,user_code string,password string,appid int64) (err error) {
+	dbl, err = ConnectDB("sys")
+	if err != nil {
+		fmt.Println(err.Error())
+	}
 	sql := `select a.Id,a.UserCode,a.UserName,a.Password,a.ActiveStatus as UserActiveStatus,c.id as RoleId,c.RoleCode,c.RoleName,b.AppID,d.AppCode,d.AppName`+
 		` from User as a`+
 		` left join UserRole as b on a.Id=b.UserId`+
@@ -47,7 +63,7 @@ func (l *Login) LoginGetByUser(db *sqlx.DB, access_token string,user_code string
 	l.UserCode = user_code
 	l.Password = password
 	l.AppID = appid
-		err = db.Get(l,sql,l.UserCode,l.Password,l.AppID)
+		err = dbl.Get(l,sql,l.UserCode,l.Password,l.AppID)
 	log.Println(sql)
 	fmt.Println("sql = ",sql)
 	if err != nil {
@@ -73,7 +89,7 @@ func (l *Login) LoginGetByUser(db *sqlx.DB, access_token string,user_code string
 	//	"  where a.UserName='"+l.UserName+"' and a.Password='"+l.Password+"' and b.AppID="+ strconv.FormatInt(l.AppID, 10)
 
 	fmt.Println("sqlsub = ", sqlsub)
-		err = db.Select(&l.Menus,sqlsub,l.UserCode,l.Password,l.AppID)
+		err = dbl.Select(&l.Menus,sqlsub,l.UserCode,l.Password,l.AppID)
 		//err = db.Select(&l.menus,sqlsub)
 
 	fmt.Println("Menus = ", l.UserCode,l.Password,l.AppID)

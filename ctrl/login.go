@@ -6,7 +6,7 @@ import (
 	"github.com/itnopadol/sys_api/api"
 	"github.com/itnopadol/sys_api/model"
 	"github.com/gin-gonic/gin"
-	_ "github.com/go-sql-driver/mysql"
+	//_ "github.com/go-sql-driver/mysql"
 	"log"
 	//"strconv"
 	//"github.com/matryer/m"
