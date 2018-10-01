@@ -24,6 +24,7 @@ type Login struct {
 	AppID            int64       `json:"appid" db:"AppID"`
 	AppCode          string      `json:"appcode" db:"AppCode"`
 	AppName          string      `json:"appname" db:"AppName"`
+	SaleCode         string      `json:"sale_code" db:"SaleCode"`
 	Menus            []*LoginSub `json:"menu"`
 }
 
@@ -55,7 +56,7 @@ func (l *Login) LoginGetByUser(db *sqlx.DB, access_token string, user_code strin
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	sql := `select a.Id,a.UserCode,a.UserName,a.Password,a.ActiveStatus as UserActiveStatus,c.id as RoleId,c.RoleCode,c.RoleName,b.AppID,d.AppCode,d.AppName,case when a.BranchId = 1 then 'สำนักงานใหญ่' when a.BranchId = 2 then 'สาขาสันกำแพง' end BranchName,ifnull(a.PicPath,'') as PicPath ` +
+	sql := `select a.Id,ifnull(a.UserCode,'') as UserCode,ifnull(a.UserName,'') as UserName,ifnull(a.Password,'') as Password,ifnull(a.SaleCode,'') as SaleCode,a.ActiveStatus as UserActiveStatus,c.id as RoleId,ifnull(c.RoleCode,'') as RoleCode,ifnull(c.RoleName,'') as RoleName,b.AppID,ifnull(d.AppCode,'') as AppCode,ifnull(d.AppName,'') as AppName,case when a.BranchId = 1 then 'สำนักงานใหญ่' when a.BranchId = 2 then 'สาขาสันกำแพง' end BranchName,ifnull(a.PicPath,'') as PicPath ` +
 		` from User as a` +
 		` left join UserRole as b on a.Id=b.UserId` +
 		` left join Role as c on b.RoleId=c.Id` +
