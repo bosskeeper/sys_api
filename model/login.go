@@ -2,12 +2,10 @@ package model
 
 import (
 	"github.com/jmoiron/sqlx"
-	//"fmt"
-	//"github.com/matryer/m"
 	"log"
 	"fmt"
-	//"strconv"
-	//	"golang.org/x/net/icmp"
+	"io"
+	"crypto/rand"
 )
 
 type Login struct {
@@ -15,6 +13,7 @@ type Login struct {
 	UserCode         string      `json:"usercode" db:"UserCode"`
 	UserName         string      `json:"username" db:"UserName"`
 	Password         string      `json:"password" db:"Password"`
+	BranchId         int64       `json:"branch_id" db:"BranchId"`
 	BranchName       string      `json:"branch_name" db:"BranchName"`
 	PicPath          string      `json:"pic_path" db:"PicPath"`
 	UserActiveStatus int64       `json:"usercctivestatus" db:"UserActiveStatus"`
@@ -25,6 +24,7 @@ type Login struct {
 	AppCode          string      `json:"appcode" db:"AppCode"`
 	AppName          string      `json:"appname" db:"AppName"`
 	SaleCode         string      `json:"sale_code" db:"SaleCode"`
+	AccessToken      string      `json:"access_token" db:"AccessToken"`
 	Menus            []*LoginSub `json:"menu"`
 }
 
@@ -56,7 +56,7 @@ func (l *Login) LoginGetByUser(db *sqlx.DB, access_token string, user_code strin
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	sql := `select a.Id,ifnull(a.UserCode,'') as UserCode,ifnull(a.UserName,'') as UserName,ifnull(a.Password,'') as Password,ifnull(a.SaleCode,'') as SaleCode,a.ActiveStatus as UserActiveStatus,c.id as RoleId,ifnull(c.RoleCode,'') as RoleCode,ifnull(c.RoleName,'') as RoleName,b.AppID,ifnull(d.AppCode,'') as AppCode,ifnull(d.AppName,'') as AppName,case when a.BranchId = 1 then 'สำนักงานใหญ่' when a.BranchId = 2 then 'สาขาสันกำแพง' end BranchName,ifnull(a.PicPath,'') as PicPath ` +
+	sql := `select a.Id,ifnull(a.UserCode,'') as UserCode,ifnull(a.UserName,'') as UserName,ifnull(a.Password,'') as Password,ifnull(a.SaleCode,'') as SaleCode,a.ActiveStatus as UserActiveStatus,c.id as RoleId,ifnull(c.RoleCode,'') as RoleCode,ifnull(c.RoleName,'') as RoleName,b.AppID,ifnull(d.AppCode,'') as AppCode,ifnull(d.AppName,'') as AppName,a.BranchId,case when a.BranchId = 1 then 'สำนักงานใหญ่' when a.BranchId = 2 then 'สาขาสันกำแพง' end BranchName,ifnull(a.PicPath,'') as PicPath ` +
 		` from User as a` +
 		` left join UserRole as b on a.Id=b.UserId` +
 		` left join Role as c on b.RoleId=c.Id` +
@@ -71,6 +71,13 @@ func (l *Login) LoginGetByUser(db *sqlx.DB, access_token string, user_code strin
 	if err != nil {
 		log.Println("Error ", err.Error())
 	}
+
+	uuid, err := newUUID()
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	l.AccessToken = uuid
 
 	sqlsub := `select f.Id as MenuID,f.MenuCode,f.MenuName,ifnull(g.Id,0) as PermissionID,ifnull(g.IsCreate,0) as IsCreate` +
 		` ,ifnull(g.IsUpdate,0) as IsUpdate,ifnull(g.IsRead,0) as IsRead,ifnull(g.IsDelete,0) as IsDelete` +
@@ -93,12 +100,34 @@ func (l *Login) LoginGetByUser(db *sqlx.DB, access_token string, user_code strin
 	fmt.Println("sqlsub = ", sqlsub)
 	err = dbl.Select(&l.Menus, sqlsub, l.UserCode, l.Password, l.AppID)
 	//err = db.Select(&l.menus,sqlsub)
-
 	fmt.Println("Menus = ", l.UserCode, l.Password, l.AppID)
 	if err != nil {
 		log.Println("Error ", err.Error())
 	}
 	fmt.Println(l)
 
+	sql_log := `Insert into UserAccessLogs(UserCode,AccessToken,AppId,BranchId,LoginTime) values(?,?,?,?,CURRENT_TIMESTAMP())`
+	fmt.Println("sql_log =",sql_log)
+	resp, err := dbl.Exec(sql_log, l.UserCode, l.AccessToken, l.AppID, l.BranchId)
+	if err != nil {
+		log.Println("Error ", err.Error())
+	}
+	id, _ := resp.LastInsertId()
+	l.Id = id
+
 	return nil
+}
+
+// newUUID generates a random UUID according to RFC 4122
+func newUUID() (string, error) {
+	uuid := make([]byte, 16)
+	n, err := io.ReadFull(rand.Reader, uuid)
+	if n != len(uuid) || err != nil {
+		return "", err
+	}
+	// variant bits; see section 4.1.1
+	uuid[8] = uuid[8]&^0xc0 | 0x80
+	// version 4 (pseudo-random); see section 4.1.3
+	uuid[6] = uuid[6]&^0xf0 | 0x40
+	return fmt.Sprintf("%x-%x-%x-%x-%x", uuid[0:4], uuid[4:6], uuid[6:8], uuid[8:10], uuid[10:]), nil
 }
