@@ -13,6 +13,8 @@ type Login struct {
 	UserCode         string      `json:"usercode" db:"UserCode"`
 	UserName         string      `json:"username" db:"UserName"`
 	Password         string      `json:"password" db:"Password"`
+	CompanyId        int         `json:"company_id" db:"CompanyId"`
+	CompanyName      string      `json:"company_name" db:"CompanyName"`
 	BranchId         int64       `json:"branch_id" db:"BranchId"`
 	BranchName       string      `json:"branch_name" db:"BranchName"`
 	PicPath          string      `json:"pic_path" db:"PicPath"`
@@ -56,11 +58,13 @@ func (l *Login) LoginGetByUser(db *sqlx.DB, access_token string, user_code strin
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	sql := `select a.Id,ifnull(a.UserCode,'') as UserCode,ifnull(a.UserName,'') as UserName,ifnull(a.Password,'') as Password,ifnull(a.SaleCode,'') as SaleCode,a.ActiveStatus as UserActiveStatus,c.id as RoleId,ifnull(c.RoleCode,'') as RoleCode,ifnull(c.RoleName,'') as RoleName,b.AppID,ifnull(d.AppCode,'') as AppCode,ifnull(d.AppName,'') as AppName,a.BranchId,case when a.BranchId = 1 then 'สำนักงานใหญ่' when a.BranchId = 2 then 'สาขาสันกำแพง' end BranchName,ifnull(a.PicPath,'') as PicPath ` +
+	sql := `select a.Id,ifnull(a.UserCode,'') as UserCode,ifnull(a.UserName,'') as UserName,ifnull(a.Password,'') as Password,ifnull(a.SaleCode,'') as SaleCode,a.ActiveStatus as UserActiveStatus,c.id as RoleId,ifnull(c.RoleCode,'') as RoleCode,ifnull(c.RoleName,'') as RoleName,b.AppID,ifnull(d.AppCode,'') as AppCode,ifnull(d.AppName,'') as AppName,a.BranchId,ifnull(f.BranchName,'') as BranchName,ifnull(a.PicPath,'') as PicPath, ifnull(a.CompanyId,0) as CompanyId, ifnull(e.CompanyName,'') as CompanyName ` +
 		` from User as a` +
 		` left join UserRole as b on a.Id=b.UserId` +
 		` left join Role as c on b.RoleId=c.Id` +
 		` left join App as d on b.AppId=d.Id` +
+		` left join CompanyMaster as e on a.CompanyId=e.Id` +
+		` left join BranchMaster as f on a.BranchId=f.Id` +
 		` where a.UserCode=? and a.Password=? and b.AppID=? limit 1`
 	l.UserCode = user_code
 	l.Password = password
@@ -107,7 +111,7 @@ func (l *Login) LoginGetByUser(db *sqlx.DB, access_token string, user_code strin
 	fmt.Println(l)
 
 	sql_log := `Insert into UserAccessLogs(UserCode,AccessToken,AppId,BranchId,LoginTime) values(?,?,?,?,CURRENT_TIMESTAMP())`
-	fmt.Println("sql_log =",sql_log)
+	fmt.Println("sql_log =", sql_log)
 	resp, err := dbl.Exec(sql_log, l.UserCode, l.AccessToken, l.AppID, l.BranchId)
 	if err != nil {
 		log.Println("Error ", err.Error())
