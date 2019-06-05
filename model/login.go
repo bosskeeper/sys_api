@@ -28,6 +28,9 @@ type Login struct {
 	SaleCode         string      `json:"sale_code" db:"SaleCode"`
 	OwnTeam          string      `json:"own_team" db:"OwnTeam"`
 	ParentTeam       string      `json:"parent_team" db:"ParentTeam"`
+	ProfitCode       string      `json:"profit_code" db:"ProfitCode"`
+	DegreeCode       string      `json:"degree_code" db:"DegreeCode"`
+	CatCode          string      `json:"cat_code" db:"CatCode"`
 	AccessToken      string      `json:"access_token" db:"AccessToken"`
 	Menus            []*LoginSub `json:"menu"`
 }
@@ -60,7 +63,7 @@ func (l *Login) LoginGetByUser(db *sqlx.DB, access_token string, user_code strin
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	sql := `select a.Id,ifnull(a.UserCode,'') as UserCode,ifnull(a.UserName,'') as UserName,ifnull(a.Password,'') as Password,ifnull(a.SaleCode,'') as SaleCode,a.ActiveStatus as UserActiveStatus,c.id as RoleId,ifnull(c.RoleCode,'') as RoleCode,ifnull(c.RoleName,'') as RoleName,b.AppID,ifnull(d.AppCode,'') as AppCode,ifnull(d.AppName,'') as AppName,a.BranchId,ifnull(f.BranchName,'') as BranchName,ifnull(a.PicPath,'') as PicPath, ifnull(a.CompanyId,0) as CompanyId, ifnull(e.CompanyName,'') as CompanyName , ifnull(g.own_team,'') as OwnTeam, ifnull(g.parent_team,'') as ParentTeam ` +
+	sql := `select a.Id,ifnull(a.UserCode,'') as UserCode,ifnull(a.UserName,'') as UserName,ifnull(a.Password,'') as Password,ifnull(a.SaleCode,'') as SaleCode,a.ActiveStatus as UserActiveStatus,c.id as RoleId,ifnull(c.RoleCode,'') as RoleCode,ifnull(c.RoleName,'') as RoleName,b.AppID,ifnull(d.AppCode,'') as AppCode,ifnull(d.AppName,'') as AppName,a.BranchId,ifnull(f.BranchName,'') as BranchName,ifnull(a.PicPath,'') as PicPath, ifnull(a.CompanyId,0) as CompanyId, ifnull(e.CompanyName,'') as CompanyName , ifnull(g.own_team,'') as OwnTeam, ifnull(g.parent_team,'') as ParentTeam, ifnull(profit_code,'') as ProfitCode,ifnull(degree_code,'') as DegreeCode,ifnull(CatCode,'') as CatCode ` +
 	//` ifnull(g.own_team,'') as OwnTeam, ifnull(g.parent_team,'') as ParentTeam ` +
 		` from User as a` +
 		` left join UserRole as b on a.Id=b.UserId` +
