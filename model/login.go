@@ -63,8 +63,7 @@ func (l *Login) LoginGetByUser(db *sqlx.DB, access_token string, user_code strin
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	sql := `select a.Id,ifnull(a.UserCode,'') as UserCode,ifnull(a.UserName,'') as UserName,ifnull(a.Password,'') as Password,ifnull(a.SaleCode,'') as SaleCode,a.ActiveStatus as UserActiveStatus,c.id as RoleId,ifnull(c.RoleCode,'') as RoleCode,ifnull(c.RoleName,'') as RoleName,b.AppID,ifnull(d.AppCode,'') as AppCode,ifnull(d.AppName,'') as AppName,a.BranchId,ifnull(f.BranchName,'') as BranchName,ifnull(a.PicPath,'') as PicPath, ifnull(a.CompanyId,0) as CompanyId, ifnull(e.CompanyName,'') as CompanyName , ifnull(g.own_team,'') as OwnTeam, ifnull(g.parent_team,'') as ParentTeam, ifnull(profit_code,'') as ProfitCode,ifnull(degree_code,'') as DegreeCode,ifnull(CatCode,'') as CatCode ` +
-	//` ifnull(g.own_team,'') as OwnTeam, ifnull(g.parent_team,'') as ParentTeam ` +
+	sql := `select a.Id,ifnull(a.UserCode,'') as UserCode,ifnull(a.UserName,'') as UserName,ifnull(a.Password,'') as Password,ifnull(a.SaleCode,'') as SaleCode,a.ActiveStatus as UserActiveStatus,c.id as RoleId,ifnull(c.RoleCode,'') as RoleCode,ifnull(c.RoleName,'') as RoleName,b.AppID,ifnull(d.AppCode,'') as AppCode,ifnull(d.AppName,'') as AppName,a.BranchId,ifnull(f.BranchName,'') as BranchName,ifnull(a.PicPath,'') as PicPath, ifnull(a.CompanyId,0) as CompanyId, ifnull(e.CompanyName,'') as CompanyName , ifnull(g.own_team,'') as OwnTeam, ifnull(g.parent_team,'') as ParentTeam, ifnull(profit_code,'') as ProfitCode,ifnull(degree_code,'') as DegreeCode,ifnull(cat_code,'') as CatCode ` +
 		` from User as a` +
 		` left join UserRole as b on a.Id=b.UserId` +
 		` left join Role as c on b.RoleId=c.Id` +
